@@ -4,8 +4,8 @@ var _sortOn = "newest";
 var backgroundPage = chrome.extension.getBackgroundPage();
 
 $(document).ready(function(){		
-	_data = $.parseJSON(localStorage["data"]);
-	_user = $.parseJSON(localStorage["user"]);
+	_data = JSON.parse(localStorage["data"]);
+	_user = JSON.parse(localStorage["user"]);
 	
 	// resort
 	if( typeof localStorage['sort'] == 'undefined' ){
@@ -59,7 +59,7 @@ $(document).ready(function(){
 			
 			return '\
 			<li>\
-				<a class="external" href="http://www.steamgifts.com'+data.link+'" style="background-color: rgba('+rgba+');">\
+				<a href="http://www.steamgifts.com'+data.link+'">\
 					<h3>'+data.title+' (Win:'+winPrcnt+'%)</h3>\
 					<p class="ui-li-count" style="width: 20px;">'+data.cost+'</p>\
 					<p>Ends: <strong>'+data.time_left_text+' @ '+data.end_date+'</strong></p>\

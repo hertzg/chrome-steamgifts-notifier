@@ -3,45 +3,19 @@
 	<head>
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" media="screen" href="css/popup.css" />
-		<link rel="stylesheet"  href="jqm/jquery.mobile-1.0b1.min.css" />
+		<link rel="stylesheet"  href="jqm/jquery.mobile-1.2.0.min.css" />
 		
-		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script> 
-		<script type="text/javascript" src="js/jquery.tmpl.min.js"></script> 
-		<script type="text/javascript" src="js/jquery.json-2.2.min.js"></script> 
-		<script src="jqm/jquery.mobile-1.0b1.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="jqm/jquery.mobile-1.2.0.min.js"></script>
 	
 		<script type="text/javascript" src="js/main.js"></script>
 	</head>
-	<body>		
-		<script id="gaTemplate" type="text/x-jquery-tmpl">
-			{{if typeof newItems != 'undefined' && newItems == 1}}
-				<li data-role="list-divider">New giveaways</li>
-			{{else typeof newItems != 'undefined' && newItems == -1}}
-				<li data-role="list-divider">Old giveaways</li>
-			{{/if}}
-			<li>
-				<a class="external" href="http://www.steamgifts.com${link}">
-					<h3>${title}</h3>
-					<p class="ui-li-count">${cost}</p>
-					<p>Ends: <strong>${end_date}</strong></p>
-					<p>Created by ${created_by_name}, at ${created_date}</p>
-					<!--<p style="font-size: 11px;">Giveaway has ${entries} and ${comments}.</p>-->
-				</a>
-			</li>
-		</script>
-		
-		<div data-role="page">
+	<body>	
+		<div data-role="page" data-scroll="true">
 			<div data-role="header"> 
 				<h1><a class="external" style="color:#FFFFFF; text-decoration:underline;" href="http://www.steamgifts.com/">Steamgifts Home</a> | You have <b id="creds" style="text-decoration:underline;">??C</b>!</h1> 
 			</div> 
 			<div data-role="content">
-				<div data-role="fieldcontain" style="width:100%; text-align:right;">
-					<!-- <label for="slider" style="font-size: 20px;">Sort by:</label> -->
-					<select name="slider" id="slider" data-role="slider">
-						<option value="newest">Newest</option>
-						<option value="ending" selected="true">Ending soon</option>
-					</select> 
-				</div>
 				<div style="position: absolute; top: 2px; right: 2px;"><a href="#" id="refresh" data-role="button" data-icon="refresh" data-iconpos="notext">Refresh</a></div>
 				<ul data-role="listview" data-inset="true"  id="list"  data-count-theme="b">
 				</ul>

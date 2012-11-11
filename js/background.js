@@ -13,13 +13,13 @@ var _newCounter;
 // user
 var _user;
 
-chrome.browserAction.setBadgeText({ text: "..." });
-chrome.browserAction.setTitle({ title: "Initializing..." });
+chrome.browserAction.setBadgeText({ text: "Working" });
+chrome.browserAction.setTitle({ title: "Working" });
 
 _user = {};
 
-_data = typeof localStorage["data"] == 'undefined' ? [] : $.parseJSON(localStorage["data"]);
-_savedIDs = typeof localStorage["savedids"] == 'undefined' ? [] : $.parseJSON(localStorage["savedids"]);
+_data = typeof localStorage["data"] == 'undefined' ? [] : JSON.parse(localStorage["data"]);
+_savedIDs = typeof localStorage["savedids"] == 'undefined' ? [] : JSON.parse(localStorage["savedids"]);
 window.setInterval(function(){checkDeals()}, _defaultTimeout);
 
 checkDeals();
@@ -47,7 +47,7 @@ function checkDeals(){
 		}
 	}
 	
-	localStorage["data"] = $.toJSON(_data);
+	localStorage["data"] = JSON.stringify(_data);
 	
 	// get page and parse
 	$.get('http://www.steamgifts.com/new', function(data){				
@@ -58,7 +58,7 @@ function checkDeals(){
 			var phold = $('li[style="float:right;"]', $('.left ol', $(data)));
 			_user.points = $("a", $(phold)).text().replace(/[()]/g, "");
 			
-			localStorage["user"] = $.toJSON(_user);
+			localStorage["user"] = JSON.stringify(_user);
 		}
 	
 		_newCounter = typeof localStorage["newcounter"] == 'undefined' ? [] : localStorage["newcounter"];
@@ -119,8 +119,8 @@ function checkDeals(){
 			chrome.browserAction.setTitle({ title: "Nothing new yet..\nLast update at "+lastUpdateTime});
 		}
 		
-		localStorage["data"] = $.toJSON(_data);
-		localStorage["savedids"] = $.toJSON(_savedIDs);
+		localStorage["data"] = JSON.stringify(_data);
+		localStorage["savedids"] = JSON.stringify(_savedIDs);
 		localStorage["newcounter"] = _newCounter;
 		
 		//window.setTimeout("checkDeals()", _defaultTimeout);
