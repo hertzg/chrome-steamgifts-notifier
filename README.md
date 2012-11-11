@@ -1,4 +1,14 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
+
+# v1.1.0
+- Forked from Original sorce
+- Made working with new security policy
+- Migrated to manifest version 2
+- Added very simple chance calculation
+- Fixed the Points overflow bug
+
+------
+
 # v1.0.10
 - remove zo's script
 
