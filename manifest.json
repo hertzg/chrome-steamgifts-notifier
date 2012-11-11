@@ -1,0 +1,26 @@
+{
+	"background": {
+		"page": "background.html",
+		"persistent": true
+	},
+	"browser_action": {
+		"default_icon": "icon.ico",
+		"default_title": "Steamgifts New Giveaways",
+		"default_popup": "popup.html"
+	},
+	"icons": { 
+		"16": "icon16.png",
+		"48": "icon48.png",
+		"128": "icon128.png" 
+	},
+	"description": "Steamgifts.com new giveaways notifier!",
+	"name": "Steamgifts Notifier",   
+	"permissions": [
+		"http://www.steamgifts.com/*",
+		"background"
+	],
+	"homepage_url": "https://github.com/hertzg/chrome-steamgifts-notifier",
+	"update_url": "http://hertzg.github.com/chrome-steamgifts-notifier/update/current.xml",
+	"manifest_version": 2,
+	"version": "1.1.0"
+}
