@@ -1,7 +1,11 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 
-# v1.1.0.1
+# v1.1.0.1a - (new features not working yet)
 - Updated jQuery Mobile to latest final release v1.2.0
+- Updated jQuery Library to latest version
+- SteamGifts api (Non official parsing html)
+- Migrating to "OO style"
+- REFACTORING.... (Hell yeah!)
 
 # v1.1.0
 - Forked from Original sorce
