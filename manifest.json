@@ -20,7 +20,6 @@
 		"background"
 	],
 	"homepage_url": "https://github.com/hertzg/chrome-steamgifts-notifier",
-	"update_url": "http://hertzg.github.com/chrome-steamgifts-notifier/update/current.xml",
 	"manifest_version": 2,
 	"version": "1.1.0"
 }
