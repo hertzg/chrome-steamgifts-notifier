@@ -1,6 +1,6 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 
-# v1.1.1 - (Working Beta)
+# v1.1.0.2b - 12.10.2012
 - Moved to more clean way of crawling and displaying giveaways
 - Improved simple chance calculation
 - Crawler Logic Rewritten 
@@ -12,14 +12,14 @@ This is an extension for Google Chrome browser for SteamGifts.com website.
 - Added trail date parsing function
 - Refactoring (70% Done)
 
-# v1.1.0.1a - (new features not working yet)
+# v1.1.0.1a - 12.10.2012
 - Updated jQuery Mobile to latest final release v1.2.0
 - Updated jQuery Library to latest version
 - SteamGifts api (Non official parsing html)
 - Migrating to "OO style"
 - REFACTORING.... (Hell yeah!)
 
-# v1.1.0
+# v1.1.0 - 11.10.2012
 - Forked from Original sorce
 - Made working with new security policy
 - Migrated to manifest version 2
