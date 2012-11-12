@@ -26,9 +26,13 @@ if(!backgroundThread) {
 $(document).ready(function(){
 	render();
 	
+	backgroundThread.clearBadge();
+	
+	
 	$('#reloadData').click(function(){
-		backgroundThread.checkNow();
-		window.close();
+		backgroundThread.checkNow(function(){
+			render();
+		});
 	});
 	
 	$('#refreshData').click(function(){
@@ -51,7 +55,7 @@ function render(){
 					<p class="ui-li-aside"><strong>6:24</strong>PM</p>\
 			</a></li>');*/
 			
-		var chance = (Math.round((1/(v.entries ? v.entries : NaN))*10000)/100);
+		var chance = (Math.round((1/(v.entries ? v.entries+1 : NaN))*10000)/100);
 		var color = "";
 		if(chance < 1) {
 			color = "255, 0, 0, 0.15";
@@ -72,7 +76,7 @@ function render(){
 							<span class="ui-li-count">'+((Math.round((1/(v.entries ? v.entries : NaN))*10000)/100)||"?")+'%</span>\
 							<p class="ui-li-aside">Ends: <strong>'+v.timeEndText+'</strong></p>\
 						</a>\
-						<a data-split-icon="check" href="#"></a>\
+						<a data-icon="'+(v.isEntered ? "check" : "star")+'" style="background-color: rgba('+(v.isEntered ? "0, 255, 0, 0.15" : "0, 255, 255, 0.15")+') !important;" href="#"></a>\
 					</li>'
 		);
 	});

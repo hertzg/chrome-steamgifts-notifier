@@ -84,7 +84,7 @@ loadVariables();
 var api = new API();
 
 
-function checkGiveaways() {
+function checkGiveaways(cb) {
 	
 	_ticks++;
 	_lastUpdate = new Date().getTime();
@@ -128,6 +128,8 @@ function checkGiveaways() {
 		}
 		
 		saveVariables();
+		
+		if(cb) cb();
 	});
 }
 
