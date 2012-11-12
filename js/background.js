@@ -1,163 +1,153 @@
-// current version
-var lastUpdateTime;
+function loadVariables() {
 
-// work timer
-var _defaultTimeout = 10 * 60 * 1000; // check every 5 minutes
-//var _timer;
+	var defaultConfig = {
+			checkInterval: 180000, //3 * 60 * 1000 = 3 min
+	};
 
-// data
-var _data;
-var _savedIDs;
-var _newCounter;
-
-// user
-var _user;
-
-chrome.browserAction.setBadgeText({ text: "Working" });
-chrome.browserAction.setTitle({ title: "Working" });
-
-_user = {};
-
-_data = typeof localStorage["data"] == 'undefined' ? [] : JSON.parse(localStorage["data"]);
-_savedIDs = typeof localStorage["savedids"] == 'undefined' ? [] : JSON.parse(localStorage["savedids"]);
-window.setInterval(function(){checkDeals()}, _defaultTimeout);
-
-checkDeals();
-
-function resetCounter(){
-	// reset counter
-	localStorage["newcounter"] = 0;
-	chrome.browserAction.setBadgeText({ text: "" });
-	chrome.browserAction.setTitle({ title: "Nothing new yet..\nLast update at "+lastUpdateTime});
+	window._config 		= localStorage.config 		? JSON.parse(localStorage.config) 		: defaultConfig;
+	window._lastUpdate 	= localStorage.lastUpdate 	? JSON.parse(localStorage.lastUpdate) 	: 0;
+	window._ticks 		= localStorage.ticks 		? JSON.parse(localStorage.ticks) 		: 0;
+	window._posts 		= localStorage.posts 		? JSON.parse(localStorage.posts) 		: [];
 }
 
-function checkDeals(){
-	chrome.browserAction.setBadgeText({ text: "..." });
-	chrome.browserAction.setTitle({ title: "Refreshing..." });
+function saveVariables() {
+	localStorage.config 		= JSON.stringify(window._config);
+	localStorage.lastUpdate 	= JSON.stringify(window._lastUpdate);
+	localStorage.ticks 		= JSON.stringify(window._ticks);
+	localStorage.posts 		= JSON.stringify(window._posts);
+}
 
-	// create regex for IDs
-	var idReg = new RegExp("away/(.+?)/");
-	//var unReg = new RegExp("user/(.+)");
-	
-	// clean old deals
-	var timeNow = new Date().getTime();
-	for(var i = 0; i < _data.length; i++){
-		if( _data[i].time_left < timeNow ){
-			_data.splice(i, 1);
-		}
+var _animationHandle;
+function startAnimateBadgeText() {
+
+	if(_animationHandle) {
+		return;
 	}
-	
-	localStorage["data"] = JSON.stringify(_data);
-	
-	// get page and parse
-	$.get('http://www.steamgifts.com/new', function(data){				
-		// get user data
-		// TODO: fetch username
-		//_user.name = $("a", $(".right ol", $(data))).attr('href');
-		if( typeof _user.point == "undefined" ){
-			var phold = $('li[style="float:right;"]', $('.left ol', $(data)));
-			_user.points = $("a", $(phold)).text().replace(/[()]/g, "");
-			
-			localStorage["user"] = JSON.stringify(_user);
-		}
-	
-		_newCounter = typeof localStorage["newcounter"] == 'undefined' ? [] : localStorage["newcounter"];
+
+	var tick = 0;
+	_animationHandle = setInterval(function(){
 		
-		// get giveaways
-		$(".post", data).each(function(index,item){
-			var ga = {};
-			
-			// get basic info
-			ga.title = $(".title a", $(this)).text();
-			ga.link = $(".title a", $(this)).attr('href');
-			ga.id = idReg.exec(ga.link)[1];
-			
-			// check if already saved
-			if( _savedIDs.indexOf(ga.id) > -1 ){
-				return;
-			}
-			_savedIDs.push(ga.id);
-			
-			// continue data gathering
-			ga.cost = $( $("span", $(this))[1] ).text().replace(/[()]/g, "");
-			
-			if( ga.cost.indexOf("Ended") > -1 ){
-				return;
-			}
-			
-			ga.created_by_name = $(".created_by a", $(this)).text();
-			ga.created_by_url = $(".created_by a", $(this)).attr('href');
-			ga.entries = $( $(".entries a", $(this))[0] ).text();
-			ga.comments = $( $(".entries a", $(this))[1] ).text();
-			
-			// Save time left as date-time
-			var time_left = $( $(".time_remaining > strong", $(this))[0] ).text();
-			ga.time_left_text = time_left;
-			ga.time_left = stringToDate(time_left, false)+(index*1000);
-			ga.end_date = new Date(ga.time_left).toLocaleTimeString() + ", " + new Date(ga.time_left).toLocaleDateString();
-			
-			// Save time created as date-time
-			//console.log( $(".time_remaining > span > strong", $(this)) );
-			var created = $(".time_remaining > span > strong", $(this)).text();
-			ga.time_created = stringToDate(created, true)+(index*1000);
-			ga.created_date = new Date(ga.time_created).toLocaleTimeString() + ", " + new Date(ga.time_created).toLocaleDateString();
-			
-			ga.saved = new Date().getTime();
-			
-			// add to global data arr & increase counter
-			_newCounter++;
-			_data.push(ga);
-		});
-		
-		lastUpdateTime = new Date().toLocaleTimeString();
-		
-		if( _newCounter > 0 ){
-			chrome.browserAction.setBadgeText({ text: String(_newCounter) });
-			chrome.browserAction.setTitle({ title: "New giveaways available!" });
-		}else{
-			chrome.browserAction.setBadgeText({ text: "" });
-			chrome.browserAction.setTitle({ title: "Nothing new yet..\nLast update at "+lastUpdateTime});
+		switch(tick++) {
+			case 0 :
+				chrome.browserAction.setBadgeText({ text: '.  '});
+			break;
+			case 1 :
+				chrome.browserAction.setBadgeText({ text: '.. '});
+			break;
+			case 2 :
+				chrome.browserAction.setBadgeText({ text: '...'});
+			break;
+			case 3 :
+				chrome.browserAction.setBadgeText({ text: ' ..'});
+			break;
+			case 4 :
+				chrome.browserAction.setBadgeText({ text: '  .'});
+			break;
+			case 5 :
+				chrome.browserAction.setBadgeText({ text: '   '});
+			break;
+			case 6 :
+				chrome.browserAction.setBadgeText({ text: ':  '});
+			break;
+			case 7 :
+				chrome.browserAction.setBadgeText({ text: ':: '});
+			break;
+			case 8 :
+				chrome.browserAction.setBadgeText({ text: ':::'});
+			break;
+			case 9 :
+				chrome.browserAction.setBadgeText({ text: ' ::'});
+			break;
+			case 10 :
+				chrome.browserAction.setBadgeText({ text: '  :'});
+			break;
+			case 11 :
+				chrome.browserAction.setBadgeText({ text: '   '});
+			break;
 		}
 		
-		localStorage["data"] = JSON.stringify(_data);
-		localStorage["savedids"] = JSON.stringify(_savedIDs);
-		localStorage["newcounter"] = _newCounter;
+		if(tick > 11) tick = 0;
 		
-		//window.setTimeout("checkDeals()", _defaultTimeout);
+	}, 100);
+}
+
+function stopAnimateBadgeText(){
+	if(_animationHandle) _animationHandle = clearInterval(_animationHandle);
+	chrome.browserAction.setBadgeText({text:''});
+}
+
+
+//Load global variables
+loadVariables();
+
+//Initialize the HzSGAPI
+var api = new API();
+
+
+function checkGiveaways() {
+	
+	_ticks++;
+	_lastUpdate = new Date().getTime();
+
+	stopAnimateBadgeText();
+	startAnimateBadgeText();
+	chrome.browserAction.setTitle({title:'Checking for new results'});
+	
+	api.getGiveaways(API.STATUS_OPEN, 1, function(giveaways){		
+		var newItemCount = 0;
+		if(_posts.length != 0) {
+			giveaways.forEach(function(gift){
+				for(var i=0; i<_posts.length; i++) {
+					if(_posts[i].uid == gift.uid) {
+						break;
+					}
+				}
+				
+				if(i == _posts.length) {
+					newItemCount++;
+				}
+			});
+		} else {
+			newItemCount = giveaways.length;
+		}
+		
+		_posts = giveaways;
+		
+		stopAnimateBadgeText();		
+		var lastUpdateDate = new Date(_lastUpdate);
+		
+		chrome.browserAction.setBadgeText({text:''+newItemCount});
+		chrome.browserAction.setTitle({title:'Found '+newItemCount+' new Deals\nLast Update @ '+ lastUpdateDate.toLocaleTimeString()});
+		
+		var clearBadgeHandler;
+		if(newItemCount == 0) {
+			clearBadgeHandler = clearTimeout(clearBadgeHandler);
+			clearBadgeHandler = setTimeout(function(){
+				clearBadge();
+			}, 3000);
+		}
+		
+		saveVariables();
 	});
 }
 
-function stringToDate(timeStr, sub){
-	var tr = new RegExp(/(\d\d?) hour|(\d\d?) minut|(\d\d?) day|(\d\d?) second|(\d\d?) week/g);
-	var time = tr.exec(timeStr);
-	if( time == null ){
-		return;
-	}
-	var h = parseInt(time[1]),
-		m = parseInt(time[2]),
-		d = parseInt(time[3]),
-		s = parseInt(time[4]),
-		w = parseInt(time[5]);
-	var mins = -1;
-	if( !isNaN(h) ){
-		mins = h * 60;
-	}
-	if( !isNaN(m) ){
-		mins = m;
-	}
-	if( !isNaN(d) ){
-		mins = d * 24 * 60;
-	}
-	if( !isNaN(s) ){
-		mins = s/60;
-	}
-	if( !isNaN(w) ){
-		mins = w * 7 * 24 * 60;
-	}
-	if( sub ){
-		var expDate = new Date( new Date().getTime() - (mins*60*1000) ).getTime();
-	}else{
-		var expDate = new Date( new Date().getTime() + (mins*60*1000) ).getTime();
-	}
-	return expDate;
+function clearBadge() {
+	chrome.browserAction.setBadgeText({text: ''});
 }
+
+var _checkGiveawaysIntervalHandle;
+function resetInterval() {
+	
+	_ticks = 0;
+
+	_checkGiveawaysIntervalHandle = window.clearInterval(_checkGiveawaysIntervalHandle);
+	_checkGiveawaysIntervalHandle = window.setInterval(checkGiveaways, _config.checkInterval);
+}
+
+function checkNow() {
+	resetInterval();
+	checkGiveaways();
+}
+
+//Fire it up!
+checkNow();

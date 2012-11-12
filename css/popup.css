@@ -1,9 +1,11 @@
 /* CSS for Gmail Checker popup.html */
 
-html
+html, body
 {
-   /*position: relative;*/
-   width: 500px;
-   height:500px;
-   max-height: 600px;
+	width: 98%;
+	min-width: 400px;
+	max-height: 800px;
+	overflow: auto;
+	margin: 0px;
+	padding: 0px;
 }

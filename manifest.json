@@ -6,7 +6,7 @@
 	"browser_action": {
 		"default_icon": "icon.ico",
 		"default_title": "Steamgifts New Giveaways",
-		"default_popup": "popup.html"
+		"default_popup": "iframe.html"
 	},
 	"icons": { 
 		"16": "icon16.png",
