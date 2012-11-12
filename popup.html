@@ -14,13 +14,13 @@
 		<!-- Home -->
 		<div data-role="page" id="page1">
 			<div data-theme="a" data-role="header">
-				<h3><a href="http://www.steamgifts.com">SteamGifts</a> Notifier</h3>
-				<a id="refreshData" data-role="button" href="#" data-icon="refresh" data-iconpos="notext" class="ui-btn-right">
-				<a id="reloadData" data-role="button" href="#" data-icon="refresh" data-iconpos="notext" class="ui-btn-left">
+				<h3><span id="user"></span> &bull; <a href="http://www.steamgifts.com" target="_blank">SteamGifts</a> &bull; <span id="points"></span></h3>
+				<a id="refreshData" data-role="button" href="#" data-icon="refresh" data-iconpos="notext" title="Refresh" class="ui-btn-right">
+				<a id="reloadData" data-role="button" href="#" data-icon="refresh" data-iconpos="notext" title="Check now!" class="ui-btn-left">
         </a>
 			</div>
 			<div data-role="content">
-				<ul data-role="listview" id="list" data-inset="true">
+				<ul data-role="listview" data-filter="true" data-filter-placeholder="You can use special keywords like :green :medium :bad :unknown" id="list" data-inset="true">
 				</ul>
 			</div>
 		</div>

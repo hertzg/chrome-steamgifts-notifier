@@ -1,7 +1,7 @@
 function loadVariables() {
 
 	var defaultConfig = {
-			checkInterval: 180000, //3 * 60 * 1000 = 3 min
+			checkInterval: 120000, //2 * 60 * 1000 = 2 min
 	};
 
 	window._config 		= localStorage.config 		? JSON.parse(localStorage.config) 		: defaultConfig;
@@ -116,11 +116,17 @@ function checkGiveaways(cb) {
 		stopAnimateBadgeText();		
 		var lastUpdateDate = new Date(_lastUpdate);
 		
-		chrome.browserAction.setBadgeText({text:''+newItemCount});
+		chrome.browserAction.setBadgeText({text:(api.isAlert ? '! ': '')+newItemCount+(api.isAlert ? ' !': '')});
 		chrome.browserAction.setTitle({title:'Found '+newItemCount+' new Deals\nLast Update @ '+ lastUpdateDate.toLocaleTimeString()});
 		
 		var clearBadgeHandler;
 		if(newItemCount == 0) {
+			if(api.isAlert) {
+				chrome.browserAction.setBadgeText({text:'!!!'});
+				notifyAlert();
+				return;
+			}
+		
 			clearBadgeHandler = clearTimeout(clearBadgeHandler);
 			clearBadgeHandler = setTimeout(function(){
 				clearBadge();
@@ -131,6 +137,23 @@ function checkGiveaways(cb) {
 		
 		if(cb) cb();
 	});
+}
+
+function notifyAlert() {
+
+	var notification = webkitNotifications.createNotification(
+		'gift.png',
+		'Information', 
+		api.lastAlertText
+	);
+	
+	notification.onclick = function(){
+		chrome.tabs.create({url:"http://www.steamgifts.com"+api.lastAlertHref}, function(){
+			notification.close();
+		});
+	}; 
+	
+	notification.show();
 }
 
 function clearBadge() {
@@ -146,9 +169,9 @@ function resetInterval() {
 	_checkGiveawaysIntervalHandle = window.setInterval(checkGiveaways, _config.checkInterval);
 }
 
-function checkNow() {
+function checkNow(cb) {
 	resetInterval();
-	checkGiveaways();
+	checkGiveaways(cb);
 }
 
 //Fire it up!

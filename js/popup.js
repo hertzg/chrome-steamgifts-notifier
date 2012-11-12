@@ -1,7 +1,7 @@
 function loadVariables() {
 
 	var defaultConfig = {
-			checkInterval: 180000, //3 * 60 * 1000 = 3 min
+			checkInterval: 120000, //2 * 60 * 1000 = 2 min
 	};
 
 	window._config 		= localStorage.config 		? JSON.parse(localStorage.config) 		: defaultConfig;
@@ -30,205 +30,115 @@ $(document).ready(function(){
 	
 	
 	$('#reloadData').click(function(){
+		$.mobile.loading( 'show', {
+			text: 'Loading new Data...',
+			textVisible: true,
+			theme: 'a',
+			html: ""
+		});
+		
 		backgroundThread.checkNow(function(){
+			$.mobile.loading('hide');
 			render();
 		});
+		
 	});
 	
 	$('#refreshData').click(function(){
 		render();
-	});		
+	});
 	
 });
+
+function updateHeader() {
+	var username = "Guest";
+	var points = '---';
+	
+	if(backgroundThread.api.isAuthorized) {
+		username = '<a href="http://www.steamgifts.com'+backgroundThread.api.userHref+'" target="_blank">'+backgroundThread.api.username+'</a>';
+		points = backgroundThread.api.points+"P";
+		
+		var positive = backgroundThread.api.pointsDiff > 0;
+		if(backgroundThread.api.pointsDiff) {
+			
+			
+			points += ' <span style="color:'+(positive ? "green" : "red")+';">'+(positive ? "+" : "")+backgroundThread.api.pointsDiff+"</span>";
+		}
+	}
+	
+	$("#user").html(username);
+	$("#points").html(points);
+}
 
 function render(){
 	loadVariables();
+	updateHeader();
 	
 	var listEl = $('#list');
 	
-	listEl.html("");
-	_posts.forEach(function(v){
-		/*listEl.append('<li><a href="index.html">\
-					<h3>Stephen Weber</h3>\
-					<p><strong>You\'ve been invited to a meeting at Filament Group in Boston, MA</strong></p>\
-					<p>Hey Stephen, if you\'re available at 10am tomorrow, we\'ve got a meeting with the jQuery team.</p>\
-					<p class="ui-li-aside"><strong>6:24</strong>PM</p>\
-			</a></li>');*/
-			
-		var chance = (Math.round((1/(v.entries ? v.entries+1 : NaN))*10000)/100);
-		var color = "";
-		if(chance < 1) {
-			color = "255, 0, 0, 0.15";
-		} else if(1 < chance && chance < 10) {
-			color = "255, 255, 0, 0.15";
-		} else if(chance >= 10) {
-			color = "0, 255, 0, 0.15";
-		} else {
-			color = "0, 0, 255, 0.15";
-		}
-		
-		listEl.append('\
-							<li>\
-						<a href="http://www.steamgifts.com'+v.href+'" target="_blank" style="background-color: rgba('+color+') !important;">\
-							<h3>'+v.title+'</h3>\
-							<p>Points: <strong>'+v.points+'</strong><p>\
-							<p>Entries: <strong>'+v.entries+'</strong> &bull; Comments: <strong>'+v.comments+'</strong></p>\
-							<span class="ui-li-count">'+((Math.round((1/(v.entries ? v.entries : NaN))*10000)/100)||"?")+'%</span>\
-							<p class="ui-li-aside">Ends: <strong>'+v.timeEndText+'</strong></p>\
-						</a>\
-						<a data-icon="'+(v.isEntered ? "check" : "star")+'" style="background-color: rgba('+(v.isEntered ? "0, 255, 0, 0.15" : "0, 255, 255, 0.15")+') !important;" href="#"></a>\
-					</li>'
-		);
+	$.mobile.loading( 'show', {
+		text: 'Rendering Page...',
+		textVisible: true,
+		theme: 'a',
+		html: ""
 	});
 	
-	listEl.listview('refresh');
-}
-
-
-
-/*
-
-
-
-
-
-var _data;
-var _user;
-var _sortOn = "newest";
-var backgroundPage = chrome.extension.getBackgroundPage();
-
-$(document).ready(function(){		
-	_data = JSON.parse(localStorage["data"]);
-	_user = JSON.parse(localStorage["user"]);
+	_posts.sort(function(a, b){	
+		var ac = Math.round((1/(a.entries ? a.entries+1 : NaN))*10000)/100,
+			bc = Math.round((1/(b.entries ? b.entries+1 : NaN))*10000)/100;
+		
+		if(a.timeEnd == b.timeEnd) {
+			if(ac == bc || isNaN(ac) || isNaN(bc)) {
+				return 0;
+			}
+			return ac > bc ? -1 : 1;
+		}
+		return a.timeEnd < b.timeEnd ? -1 : 1;
+	});
 	
-	// resort
-	if( typeof localStorage['sort'] == 'undefined' ){
-		localStorage['sort'] = _sortOn;
-	}else{
-		_sortOn = localStorage['sort'] ;
-	}
-	
-	if( _sortOn == "ending" ){
-		resortByEnd();
-	}else{
-		resortByNew();
-	}
-	
-	// trim to 20 last
-	if( _data.length > 20 ){
-		_data = _data.slice(0,20);
-	}
-	
-	// reset counter
-	backgroundPage.resetCounter();
-	
-	/*var newCount = localStorage["newcounter"];
-	if( newCount > 0 ){
-		console.log('new items: '+newCount);
-		_data[0].newItems = 1;
-		_data[newCount].newItems = -1;
-		console.log(_data[0]);
-		console.log(_data[newCount]);
-	}*
-	
-	
-	function template(data) {
-			/*if typeof newItems != 'undefined' && newItems == 1}}
-				<li data-role="list-divider">New giveaways</li>
-			{{else typeof newItems != 'undefined' && newItems == -1}}
-				<li data-role="list-divider">Old giveaways</li>
-			{{/if}}*
-			
-			var entries = parseInt(data.entries.replace(/([^0-9]*)/g, ''));
-			var chance = (1/(entries || 1));
-			var winPrcnt = Math.round(chance*10000)/100;
-			
-			if(chance < 0.1) {
-				rgba = "255, 0, 0, .3";
-			} else if(0.09 < chance && chance < 0.35) {
-				rgba = "255, 255, 0, .3";
-			} else if(chance >= 0.35) {
-				rgba = "0, 255, 0, .3";
+	listEl.html("");
+	setTimeout(function(){ //Sorry for this but some think clicking refresh is not working :)))
+		_posts.forEach(function(v){
+			/*listEl.append('<li><a href="index.html">\
+						<h3>Stephen Weber</h3>\
+						<p><strong>You\'ve been invited to a meeting at Filament Group in Boston, MA</strong></p>\
+						<p>Hey Stephen, if you\'re available at 10am tomorrow, we\'ve got a meeting with the jQuery team.</p>\
+						<p class="ui-li-aside"><strong>6:24</strong>PM</p>\
+				</a></li>');*/
+				
+			var chance = (Math.round((1/(v.entries ? v.entries+1 : NaN))*10000)/100);
+			var color = "", keyword = "";
+			if(chance < 1) {
+				color = "255, 0, 0, 0.15";
+				keyword = ":low :bad :red";
+			} else if(1 < chance && chance < 10) {
+				color = "255, 255, 0, 0.15";
+				keyword = ":medium :normal :yellow";
+			} else if(chance >= 10) {
+				color = "0, 255, 0, 0.15";
+				keyword = ":high :green :good";
+			} else {
+				color = "0, 0, 255, 0.15";
+				keyword = ":unknown :blue :?";
 			}
 			
-			return '\
-			<li>\
-				<a href="http://www.steamgifts.com'+data.link+'">\
-					<h3>'+data.title+' (Win:'+winPrcnt+'%)</h3>\
-					<p class="ui-li-count" style="width: 20px;">'+data.cost+'</p>\
-					<p>Ends: <strong>'+data.time_left_text+' @ '+data.end_date+'</strong></p>\
-					<p>Created by '+data.created_by_name+', at '+data.created_date+'</p>\
-					<p style="font-size: 11px;">Giveaway has '+data.entries+' and '+data.comments+'.</p>\
-				</a>\
-			</li>';
-	}
-	
-	// render data
-	
-	_data.forEach(function(v){
-		$('#list').append(template(v));
-	});
-	
-	//$( "#gaTemplate" ).tmpl( _data ).appendTo( "#list" );  //!____________________________________!!!!!_______________
-	
-	$("#creds").text(_user.points);
-	
-	// set external click handler
-	$("a.external").live('click', function(){
-		chrome.tabs.create({'url': $(this).attr('href')});
-		window.close();
-	});
-	
-	// resort handlers
-	$("#slider").change(function(){
-		if( $(this).val() == _sortOn ) return;
-		
-		switch( $(this).val() ){
-			case "newest":
-				resortByNew();
-				break;
-			case "ending":
-				resortByEnd();
-				break;
-		}
-		
-		$( "#list" ).empty();
-		
-		_data.forEach(function(v){
-			$('#list').append(template(v));
+			listEl.append('\
+				<li>\
+					<a href="http://www.steamgifts.com'+v.href+'" target="_blank" style="background-color: rgba('+color+') !important;">\
+						<img src="'+v.authorAvatar+'" title="'+v.authorName+'" style="margin-top: 14px; margin-left: 8px;">\
+						<h3>'+v.title+'</h3>\
+						<p>Points: <strong>'+v.points+'</strong> &bull; by <strong>'+v.authorName+'</strong> <p>\
+						<p>Entries: <strong>'+v.entries+'</strong> &bull; Comments: <strong>'+v.comments+'</strong></p>\
+						<span class="ui-li-count">'+((Math.round((1/(v.entries ? v.entries : NaN))*10000)/100)||"?")+'%</span>\
+						<p class="ui-li-aside"><strong>'+v.timeEndText+'</strong> left</p>\
+						<div style="display: none;">'+keyword+'</div>\
+					</a>\
+					<a data-icon="'+(v.isEntered ? "check" : "star")+'" id="" href="#act-'+v.uid+'"></a>\
+				</li>'
+			);
 		});
-		
-		//$( "#gaTemplate" ).tmpl( _data ).appendTo( "#list" ); //!____________________________________!!!!!_______________
-		
-		$( "#list" ).listview("refresh");
-	});
-	
-	// refresh
-	$("#refresh").click(function(){
-		backgroundPage.checkDeals();
-		window.close();
-	});
-	
-});
-
-function resortByNew(){
-	_sortOn = localStorage['sort'] = "newest";
-
-	$("#newest").addClass("selected");
-	$("#ending").removeClass("selected");
-
-	_data = _data.sort(function(a,b){
-		return a.time_created > b.time_created ? -1 : 1	;
-	});
+		listEl.listview('refresh');
+		$.mobile.loading('hide');
+	}, 200);
+	listEl.listview('refresh');
 }
-
-function resortByEnd(){
-	_sortOn = localStorage['sort'] = "ending";
-
-	$("#ending").addClass("selected");
-	$("#newest").removeClass("selected");
-
-	_data = _data.sort(function(a,b){
-		return a.time_left > b.time_left ? 1 : -1;
-	});
-}*/

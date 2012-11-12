@@ -4,7 +4,6 @@ function API() {
 	//== Constants
 	API.STATE_WORKING = 'working';
 	API.STATE_IDLE = 'idle';
-	API.STATE_WAITING = 'waiting';
 	
 	API.STATUS_NEW = 'new';
 	API.STATUS_OPEN = 'open';
@@ -16,10 +15,19 @@ function API() {
 
 	this.points = null;
 	this.pointsDiff = null;
-	this.user = null;
-	this.lastUpdate = null;
 	
-	//== EVENTS
+	this.username = null;
+	this.userHref = null;
+	
+	this.isAlert = false;
+	this.lastAlertText = null;
+	this.lastAlertHref = null;
+	
+	this.lastUpdate = null;
+	this.isAuthorized = false;
+	this.state = API.STATE_IDLE;
+	
+	//== EVENTSs
 	this.onStateChange = function(){};
 
 	//== Methods
@@ -27,10 +35,48 @@ function API() {
 		
 	};
 	
+	this.parseUserInfo = function(html) {
+		var pointsEl = $('div#navigation ol li a:contains("Account")', html).last();
+		var profileEl = $('div#navigation ol li a[href^="/user/"]', html);
+		
+		this.isAuthorized = pointsEl.length == 1;
+		
+		if(this.isAuthorized) {
+			this.userHref = profileEl.attr("href");
+			this.username = this.userHref.replace("/user/",  '');
+		
+		
+			var newPoints = parseInt(pointsEl.text().trim().replace(/([^0-9]*)/g, ''));
+			if(this.points != null) {
+				this.pointsDiff = (newPoints - this.points);
+			}
+			
+			var el = $('.alert', html);
+			that.isAlert = !!el.length;
+			if(this.isAlert) {
+				this.lastAlertText = el.text().trim();
+				this.lastAlertHref = el.find("a").attr("href");
+			}
+			
+			this.points = newPoints;
+		}
+		
+	};
+	
 	this.getGiveaways = function(status, page, callback){
-		$.get('http://www.steamgifts.com/'+status+'/page/'+page, function(html){
+		this._get('http://www.steamgifts.com/'+status+'/page/'+page, function(html){
 			var arr = that.processGiveaways(html);
 			callback(arr);
+		});
+	};
+	
+	this._get = function(url, callback) {
+		this.lastUpdate = new Date().getTime();
+		this.onStateChange(API.STATE_WORKING);
+		$.get(url, function(html){
+			that.parseUserInfo(html);
+			that.onStateChange(API.STATE_IDLE);
+			callback(html);
 		});
 	};
 	

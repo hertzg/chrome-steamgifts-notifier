@@ -140,10 +140,13 @@ function Giveaway(obj) {
 		this.authorHref = els.createdByAnchor.attr('href');
 		this.authorAvatar = els.centerDiv.children('.avatar').attr('style').replace(/.*url\(([^\)]*)\).*/i, "$1");
 		
-		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/i, ''));
-		this.comments = parseInt(els.entriesDiv.children('span').last().text().trim().replace(/([^0-9]*)/i, ''));
+		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/ig, ''));
+		this.comments = parseInt(els.entriesDiv.children('span').last().text().trim().replace(/([^0-9]*)/ig, ''));
 		
 		this.appLogo = els.rightDiv.find('img').attr('src');
+		if(this.appLogo.indexOf('://') == -1) {
+			this.appLogo = 'http://www.steamgifts.com'+this.appLogo;
+		}
 		
 		this.isProcessed = true;
 	};
@@ -177,10 +180,10 @@ function Giveaway(obj) {
 		
 		var res = NaN;
 		
-		var number = parseInt(str.replace(/([^0-9]*)/, '').trim());
+		var number = parseInt(str.replace(/([^0-9]*)/, '').trim()); //NEEDS G flag imho!
 		if(!number) return res; //GTFO! No Digits found
 		
-		var text = str.replace(/([0-9]*)/, '').trim();
+		var text = str.replace(/([0-9]*)/, '').trim(); //Needs G Flag imho!
 		
 		for(j in x) {
 			if(x.hasOwnProperty(j)) {

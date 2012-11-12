@@ -9,3 +9,7 @@ html, body
 	margin: 0px;
 	padding: 0px;
 }
+
+a, a:hover, a:active, a:link, a:visited {
+	color : inherit;
+}

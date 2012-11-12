@@ -17,9 +17,14 @@
 	"name": "Steamgifts Notifier",   
 	"permissions": [
 		"http://www.steamgifts.com/*",
-		"background"
+		"background",
+		"notifications"
+	],
+	"web_accessible_resources": [
+		"icon48.png",
+		"gift.png"
 	],
 	"homepage_url": "https://github.com/hertzg/chrome-steamgifts-notifier",
 	"manifest_version": 2,
-	"version": "1.1.0.3"
+	"version": "1.1.0.4"
 }
