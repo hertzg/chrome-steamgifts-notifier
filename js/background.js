@@ -4,17 +4,17 @@ function loadVariables() {
 			checkInterval: 120000, //2 * 60 * 1000 = 2 min
 	};
 
-	window._config 		= localStorage.config 		? JSON.parse(localStorage.config) 		: defaultConfig;
-	window._lastUpdate 	= localStorage.lastUpdate 	? JSON.parse(localStorage.lastUpdate) 	: 0;
-	window._ticks 		= localStorage.ticks 		? JSON.parse(localStorage.ticks) 		: 0;
-	window._posts 		= localStorage.posts 		? JSON.parse(localStorage.posts) 		: [];
+	window._config 							= localStorage.config 						? JSON.parse(localStorage.config) 					: defaultConfig;
+	window._lastUpdate 						= localStorage.lastUpdate 					? JSON.parse(localStorage.lastUpdate) 				: 0;
+	window._ticks 							= localStorage.ticks 						? JSON.parse(localStorage.ticks) 					: 0;
+	window._posts 							= localStorage.posts 						? JSON.parse(localStorage.posts) 					: [];
 }
 
 function saveVariables() {
-	localStorage.config 		= JSON.stringify(window._config);
-	localStorage.lastUpdate 	= JSON.stringify(window._lastUpdate);
-	localStorage.ticks 		= JSON.stringify(window._ticks);
-	localStorage.posts 		= JSON.stringify(window._posts);
+	localStorage.config 					= JSON.stringify(window._config);
+	localStorage.lastUpdate 				= JSON.stringify(window._lastUpdate);
+	localStorage.ticks 						= JSON.stringify(window._ticks);
+	localStorage.posts 						= JSON.stringify(window._posts);
 }
 
 var _animationHandle;
@@ -121,9 +121,14 @@ function checkGiveaways(cb) {
 		
 		var clearBadgeHandler;
 		if(newItemCount == 0) {
+
+			if(api.isNewAlert) {
+				notifyAlert();
+				return;
+			}
+			
 			if(api.isAlert) {
 				chrome.browserAction.setBadgeText({text:'!!!'});
-				notifyAlert();
 				return;
 			}
 		
@@ -140,7 +145,7 @@ function checkGiveaways(cb) {
 }
 
 function notifyAlert() {
-
+	
 	var notification = webkitNotifications.createNotification(
 		'gift.png',
 		'Information', 
@@ -148,10 +153,10 @@ function notifyAlert() {
 	);
 	
 	notification.onclick = function(){
-		chrome.tabs.create({url:"http://www.steamgifts.com"+api.lastAlertHref}, function(){
+		chrome.tabs.create({url:"http://www.steamgifts.com"+api.lastAlertHref||""}, function(){
 			notification.close();
 		});
-	}; 
+	};
 	
 	notification.show();
 }

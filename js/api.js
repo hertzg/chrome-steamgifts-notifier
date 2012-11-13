@@ -20,6 +20,8 @@ function API() {
 	this.userHref = null;
 	
 	this.isAlert = false;
+	this.isNewAlert = false;
+	this.lastAlertId = 0;
 	this.lastAlertText = null;
 	this.lastAlertHref = null;
 	
@@ -52,10 +54,21 @@ function API() {
 			}
 			
 			var el = $('.alert', html);
-			that.isAlert = !!el.length;
+			this.isAlert = !!el.length;
 			if(this.isAlert) {
-				this.lastAlertText = el.text().trim();
-				this.lastAlertHref = el.find("a").attr("href");
+				var alertText = el.text().trim();
+				var alertHref = el.find('a').attr('href');
+				
+				if(this.lastAlertText != alertText || this.lastAlertHref != alertHref) {
+					this.isNewAlert = true;
+					this.lastAlertId += 1;
+					this.lastAlertText = alertText;
+					this.lastAlertHref = alertHref;
+				} else {
+					this.isNewAlert = false;
+				}
+			} else {
+				this.isNewAlert = false;
 			}
 			
 			this.points = newPoints;
