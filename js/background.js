@@ -25,49 +25,10 @@ function startAnimateBadgeText() {
 	}
 
 	var tick = 0;
-	_animationHandle = setInterval(function(){
-		
-		switch(tick++) {
-			case 0 :
-				chrome.browserAction.setBadgeText({ text: '.  '});
-			break;
-			case 1 :
-				chrome.browserAction.setBadgeText({ text: '.. '});
-			break;
-			case 2 :
-				chrome.browserAction.setBadgeText({ text: '...'});
-			break;
-			case 3 :
-				chrome.browserAction.setBadgeText({ text: ' ..'});
-			break;
-			case 4 :
-				chrome.browserAction.setBadgeText({ text: '  .'});
-			break;
-			case 5 :
-				chrome.browserAction.setBadgeText({ text: '   '});
-			break;
-			case 6 :
-				chrome.browserAction.setBadgeText({ text: ':  '});
-			break;
-			case 7 :
-				chrome.browserAction.setBadgeText({ text: ':: '});
-			break;
-			case 8 :
-				chrome.browserAction.setBadgeText({ text: ':::'});
-			break;
-			case 9 :
-				chrome.browserAction.setBadgeText({ text: ' ::'});
-			break;
-			case 10 :
-				chrome.browserAction.setBadgeText({ text: '  :'});
-			break;
-			case 11 :
-				chrome.browserAction.setBadgeText({ text: '   '});
-			break;
-		}
-		
-		if(tick > 11) tick = 0;
-		
+	_animationHandle = setInterval(function(){		
+		var sprites = [	'   ',	'.  ',	'.. ',	'...',	' ..',	'  .',	'   ',	':  ',	':: ',	':::',	' ::',	'  :',	'   '];
+		chrome.browserAction.setBadgeText({ text: sprites[tick++]});
+		if(tick >= sprites.length) tick = 0;
 	}, 100);
 }
 
