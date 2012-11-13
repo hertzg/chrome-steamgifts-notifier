@@ -127,7 +127,7 @@ function render(){
 					<a href="http://www.steamgifts.com'+v.href+'" target="_blank" style="background-color: rgba('+color+') !important;">\
 						<img src="'+v.authorAvatar+'" title="'+v.authorName+'" style="margin-top: 14px; margin-left: 8px;">\
 						<h3>'+v.title+'</h3>\
-						<p>Points: <strong>'+(v.points || '???')+'</strong> &bull; by <strong>'+v.authorName+'</strong> <p>\
+						<p>Points: <strong>'+(v.points || '???')+'</strong> &bull; Copies: <strong>'+v.copies+'</strong> &bull; by <strong>'+v.authorName+'</strong> <p>\
 						<p>Entries: <strong>'+v.entries+'</strong> &bull; Comments: <strong>'+v.comments+'</strong></p>\
 						<span class="ui-li-count">'+((Math.round((1/(v.entries ? v.entries : NaN))*10000)/100)||"?")+'%</span>\
 						<p class="ui-li-aside"><strong>'+v.timeEndText+'</strong> left</p>\

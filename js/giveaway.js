@@ -10,6 +10,8 @@ function Giveaway(obj) {
 	this.titleText = null;
 	this.href = null;
 	
+	this.copies = null;
+	
 	this.isNew 					= null;
 	this.isPinned				= null;
 	this.isEntered 				= null;
@@ -127,6 +129,8 @@ function Giveaway(obj) {
 		this.isCommentable = null; //TODO: dunno how
 		
 		this.titleText = els.titleDiv.text().trim();
+		var copiesMatch = this.titleText.match(/\(([0-9]*)\s*Copies\)/i);
+		this.copies = parseInt(copiesMatch ? copiesMatch[1] : 1);
 		this.points = parseInt(this.titleText.replace(/.*\(([0-9]*)P\).*/i, "$1"));
 		this.pirceUSD = null; //TODO: process after fetch !==========
 		
