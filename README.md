@@ -1,6 +1,6 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 
-# v 1.1.0.6b - 13.11.2012
+# v 1.1.0.6b - 14.11.2012
 - Added copies parsing #4
 - Added configuration manager class #7
 - Fixed points being null when not logged into steamgifts #5
