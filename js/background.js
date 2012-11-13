@@ -26,7 +26,7 @@ function startAnimateBadgeText() {
 
 	var tick = 0;
 	_animationHandle = setInterval(function(){		
-		var sprites = [	'   ',	'.  ',	'.. ',	'...',	' ..',	'  .',	'   ',	':  ',	':: ',	':::',	' ::',	'  :',	'   '];
+		var sprites = [	'    ',	':   ',	'::  ',	'::: ',	'::::',	' :::',	'  ::',	'   :'];
 		chrome.browserAction.setBadgeText({ text: sprites[tick++]});
 		if(tick >= sprites.length) tick = 0;
 	}, 100);
