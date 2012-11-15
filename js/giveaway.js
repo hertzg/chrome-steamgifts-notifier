@@ -26,6 +26,7 @@ function Giveaway(obj) {
 	this.isFetched 				= false;
 	this.isProcessed  			= false;
 	this.isFetchedProcessed 	= false;
+	this.isPinned 				= false;
 	
 	this.points = null;
 	this.pirceUSD = null;
@@ -142,7 +143,11 @@ function Giveaway(obj) {
 			
 		this.authorName = els.createdByAnchor.text().trim();
 		this.authorHref = els.createdByAnchor.attr('href');
-		this.authorAvatar = els.centerDiv.children('.avatar').attr('style').replace(/.*url\(([^\)]*)\).*/i, "$1");
+		
+		var authorAvatarStyle = els.centerDiv.children('.avatar').attr('style');
+		
+		this.isPinned = !!authorAvatarStyle;
+		this.authorAvatar = authorAvatarStyle ? authorAvatarStyle.replace(/.*url\(([^\)]*)\).*/i, "$1") : "no-image.png";
 		
 		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/ig, ''));
 		this.comments = parseInt(els.entriesDiv.children('span').last().text().trim().replace(/([^0-9]*)/ig, ''));
