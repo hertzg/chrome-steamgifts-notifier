@@ -1,22 +1,3 @@
-function loadVariables() {
-
-	var defaultConfig = {
-			checkInterval: 120000, //2 * 60 * 1000 = 2 min
-	};
-
-	window._config 							= localStorage.config 						? JSON.parse(localStorage.config) 					: defaultConfig;
-	window._lastUpdate 						= localStorage.lastUpdate 					? JSON.parse(localStorage.lastUpdate) 				: 0;
-	window._ticks 							= localStorage.ticks 						? JSON.parse(localStorage.ticks) 					: 0;
-	window._posts 							= localStorage.posts 						? JSON.parse(localStorage.posts) 					: [];
-}
-
-function saveVariables() {
-	localStorage.config 					= JSON.stringify(window._config);
-	localStorage.lastUpdate 				= JSON.stringify(window._lastUpdate);
-	localStorage.ticks 						= JSON.stringify(window._ticks);
-	localStorage.posts 						= JSON.stringify(window._posts);
-}
-
 var _animationHandle;
 function startAnimateBadgeText() {
 
@@ -37,18 +18,14 @@ function stopAnimateBadgeText(){
 	chrome.browserAction.setBadgeText({text:''});
 }
 
-
-//Load global variables
-loadVariables();
-
 //Initialize the HzSGAPI
 var api = new API();
 
 
 function checkGiveaways(cb) {
 	
-	_ticks++;
-	_lastUpdate = new Date().getTime();
+	Config.set('ticks', Config.get('ticks')+1);
+	Config.set('lastUpdate', new Date().getTime());
 
 	stopAnimateBadgeText();
 	startAnimateBadgeText();
@@ -56,15 +33,15 @@ function checkGiveaways(cb) {
 	
 	api.getGiveaways(API.STATUS_OPEN, 1, function(giveaways){		
 		var newItemCount = 0;
-		if(_posts.length != 0) {
+		if(Config.get('posts').length != 0) {
 			giveaways.forEach(function(gift){
-				for(var i=0; i<_posts.length; i++) {
-					if(_posts[i].uid == gift.uid) {
+				for(var i=0; i<Config.get('posts').length; i++) {
+					if(Config.get('posts')[i].uid == gift.uid) {
 						break;
 					}
 				}
 				
-				if(i == _posts.length) {
+				if(i == Config.get('posts').length) {
 					newItemCount++;
 				}
 			});
@@ -72,10 +49,10 @@ function checkGiveaways(cb) {
 			newItemCount = giveaways.length;
 		}
 		
-		_posts = giveaways;
+		Config.set('posts', giveaways);
 		
 		stopAnimateBadgeText();		
-		var lastUpdateDate = new Date(_lastUpdate);
+		var lastUpdateDate = new Date(Config.get('lastUpdate'));
 		
 		chrome.browserAction.setBadgeText({text:(api.isAlert ? '! ': '')+newItemCount+(api.isAlert ? ' !': '')});
 		chrome.browserAction.setTitle({title:'Found '+newItemCount+' new Deals\nLast Update @ '+ lastUpdateDate.toLocaleTimeString()});
@@ -99,7 +76,7 @@ function checkGiveaways(cb) {
 			}, 3000);
 		}
 		
-		saveVariables();
+		Config.save();
 		
 		if(cb) cb();
 	});
@@ -128,11 +105,10 @@ function clearBadge() {
 
 var _checkGiveawaysIntervalHandle;
 function resetInterval() {
-	
-	_ticks = 0;
+	Config.set('ticks', 0);
 
 	_checkGiveawaysIntervalHandle = window.clearInterval(_checkGiveawaysIntervalHandle);
-	_checkGiveawaysIntervalHandle = window.setInterval(checkGiveaways, _config.checkInterval);
+	_checkGiveawaysIntervalHandle = window.setInterval(checkGiveaways, Config.get('checkInterval'));
 }
 
 function checkNow(cb) {
