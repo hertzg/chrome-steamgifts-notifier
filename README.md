@@ -1,5 +1,9 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 
+# v 1.1.0.6c - 15.11.2012 - unreleaesed
+- Fixed: #12, #9, #10
+- Implemented: #7
+
 # v 1.1.0.6b - 14.11.2012
 - Added copies parsing #4
 - Added configuration manager class #7
