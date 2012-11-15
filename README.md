@@ -1,12 +1,10 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 
 # v 1.1.0.6c - 15.11.2012 - unreleaesed
-- Fixed: 
-- - [#12](https://github.com/hertzg/chrome-steamgifts-notifier/issues/12)
-- - [#9](https://github.com/hertzg/chrome-steamgifts-notifier/issues/9)
-- - [#10](https://github.com/hertzg/chrome-steamgifts-notifier/issues/10)
-- Implemented:
-- - [#7](https://github.com/hertzg/chrome-steamgifts-notifier/issues/7)
+- Fixed [#12](https://github.com/hertzg/chrome-steamgifts-notifier/issues/12)
+- Fixed [#9](https://github.com/hertzg/chrome-steamgifts-notifier/issues/9)
+- Fixed [#10](https://github.com/hertzg/chrome-steamgifts-notifier/issues/10)
+- Implemented [#7](https://github.com/hertzg/chrome-steamgifts-notifier/issues/7)
 
 # v 1.1.0.6b - 14.11.2012
 - Added copies parsing #4
