@@ -1,5 +1,18 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 
+
+
+# v 1.1.0.8 - 16.11.2012
+- Added Sorting feature (Yay!)
+- New Design (Important party :( )
+- Removed Scrollbar to free up some more space
+- Implemented/Fixed Pinned giveaway parsing
+- Fixed Configuration Manger issues with defaults
+- Fixed new giveaway detection
+- Fixed copies parsing
+- Improved entries and comments parsing
+- Tons of improvements...
+
 # v 1.1.0.7 - 15.11.2012
 - Fixed [#9](https://github.com/hertzg/chrome-steamgifts-notifier/issues/9)
 - Fixed [#10](https://github.com/hertzg/chrome-steamgifts-notifier/issues/10)
