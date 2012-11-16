@@ -101,17 +101,17 @@ function render(){
 						<p class="ui-li-aside"><strong>6:24</strong>PM</p>\
 				</a></li>');*/
 			
-			var rawChance = 1/(v.entries ? v.entries+1 : NaN);
+			var rawChance = 1/(v.entries ? v.entries+1 : 1);
 			var chance = (Math.round(rawChance*10000)/100);
 			
 			var color = "", keyword = "";
-			if(rawChance < 1) {
+			if(rawChance < 0.01) {
 				color = "255, 0, 0, 0.15";
 				keyword = ":low :bad :red";
-			} else if(1 <= rawChance && rawChance < 10) {
+			} else if(0.01 <= rawChance && rawChance < 0.10) {
 				color = "255, 255, 0, 0.15";
 				keyword = ":medium :normal :yellow";
-			} else if(rawChance >= 10) {
+			} else if(rawChance >= 0.10) {
 				color = "0, 255, 0, 0.15";
 				keyword = ":high :green :good";
 			} else {
@@ -126,7 +126,7 @@ function render(){
 						<div class="content-container">\
 							<h3 title="'+v.title+'">'+v.title+'</h3>'+(v.isNew ? '<span class="icon icon-new" title="New">&nbsp;</span>' : '')+''+(v.isPinned ? '<span class="icon icon-pinned" title="Pinned">&nbsp;</span>' : '')+'<br />\
 							<span class="icon icon-copies" title="Copies">'+v.copies+'</span> &bull; <span class="icon icon-points" title="Points">'+(v.points || '???')+'</span> &bull;\
-							<span class="icon icon-comments" title="Comments">'+v.comments+'</span> &bull; <span class="icon icon-entries" title="Entries">'+v.entries+'</span><br/>\
+							<span class="icon icon-comments" title="Comments">'+v.comments+'</span> &bull; <span class="icon icon-entries" title="Entries">'+v.entries+'</span> &bull; <span class="icon icon-gold" title="Winning odds">'+chance+'%</span><br/>\
 							<span class="icon icon-timestarted" title="Time Started">'+v.timeStartText+' ago</span> &bull; <span class="icon icon-timeleft" title="Time left">'+v.timeEndText+' left</span>\
 						</div>\
 						<div style="clear: both !important;"></div>\

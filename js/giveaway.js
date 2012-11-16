@@ -81,7 +81,7 @@ function Giveaway(obj) {
 	};
 	
 	this.initFromPost = function(post) {
-	
+		
 		/* == DOMTree = */
 		/*				*/
 		/*+	.post		*/	els.post = $(post);		
@@ -108,7 +108,7 @@ function Giveaway(obj) {
 		
 		this.title = els.titleAnchor.text();
 		this.href = els.titleAnchor.attr("href");
-		this.uid = this.href.replace(/^\/giveaway\/([^\/]*)\/.*$/i, "$1");
+		this.uid = this.href.toLowerCase().replace(/^\/giveaway\/([^\/]*)\/.*$/, "$1");
 		
 		var hasNewSpan = !!els.titleDiv.has('span.new').length;
 		this.isNew = hasNewSpan && els.titleDiv.find('span.new').text().toLowerCase().indexOf('new') != -1;
@@ -122,17 +122,19 @@ function Giveaway(obj) {
 		
 		var descriptionText = els.descriptionDiv.text().trim().split("\n")[0].trim();
 		this.isCommingSoon = (descriptionText.indexOf("begins") != -1);
-		this.isClosed = (descriptionText.indexOf('Awaiting') != -1) || (descriptionText.indexOf('Congratulations') != -1);
+		this.isClosed = (descriptionText.indexOf('Awaiting') != -1) || (descriptionText.toLowerCase().indexOf('congratulations') != -1);
 		this.isOpen = (descriptionText.indexOf('Open for') != -1);
-			
+		
 		this.isCommentable = null; //TODO: dunno how
 		
 		this.titleText = els.titleDiv.text().trim();
-		var copiesMatch = this.titleText.match(/\((.*)\s*Copies\)/i);
+		
+		var copiesMatch = this.titleText.toLowerCase().match(/\((.*)\s*copies\)/);
 		var copiesNumber = "1";
 		if(copiesMatch) {
 			copiesNumber = copiesMatch[1].replace(/([^0-9*])/g, '');
 		}
+		
 		this.copies = parseInt(copiesNumber);
 		this.points = parseInt(this.titleText.replace(/.*\(([0-9]*)P\).*/i, "$1"));
 		this.pirceUSD = null; //TODO: process after fetch !==========
@@ -142,14 +144,13 @@ function Giveaway(obj) {
 		
 		this.timeStart = this.stringToMs(this.timeStartText);
 		this.timeEnd = this.stringToMs(this.timeEndText);
-			
+		
 		this.authorName = els.createdByAnchor.text().trim();
 		this.authorHref = els.createdByAnchor.attr('href');
 		
 		var authorAvatarStyle = els.centerDiv.children('.avatar').attr('style');
-		
 		this.isPinned = !authorAvatarStyle;
-		this.authorAvatar = authorAvatarStyle ? authorAvatarStyle.replace(/.*url\(([^\)]*)\).*/i, "$1") : "img/no-image.png";
+		this.authorAvatar = authorAvatarStyle ? authorAvatarStyle.replace(/.*url\(([^\)]*)\).*/, "$1") : "img/no-image.png";
 		
 		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/g, ''));
 		this.comments = parseInt(els.entriesDiv.children('span').last().text().trim().replace(/([^0-9]*)/g, ''));
