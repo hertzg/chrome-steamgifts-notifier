@@ -1,6 +1,12 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 
-
+# v 1.1.0.9 - 16.11.2012
+- Added Winning chance icon
+- Improved Giveaway Parsing
+- Improved Closed giveaway detection
+- Improved Copies parsing
+- Improved Author avatar parsing
+- Fixed coloring issue
 
 # v 1.1.0.8 - 16.11.2012
 - Added Sorting feature (Yay!)
