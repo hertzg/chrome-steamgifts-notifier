@@ -26,7 +26,6 @@ function Giveaway(obj) {
 	this.isFetched 				= false;
 	this.isProcessed  			= false;
 	this.isFetchedProcessed 	= false;
-	this.isPinned 				= false;
 	
 	this.points = null;
 	this.pirceUSD = null;
@@ -85,7 +84,7 @@ function Giveaway(obj) {
 	
 		/* == DOMTree = */
 		/*				*/
-		/*+	.post		*/	els.post = $(post);
+		/*+	.post		*/	els.post = $(post);		
 		/*|				*/
 		/*|-+ .left		*/		els.leftDiv = $('.left', els.post);
 		/*| |			*/
@@ -111,9 +110,8 @@ function Giveaway(obj) {
 		this.href = els.titleAnchor.attr("href");
 		this.uid = this.href.replace(/^\/giveaway\/([^\/]*)\/.*$/i, "$1");
 		
-		this.isNew = !!$('.title', $('.post')[1]).has('span.new').length;
-		
-		this.isPinned = null; //TODO: pinned giveaways, developer giveaways and those kinds
+		var hasNewSpan = !!els.titleDiv.has('span.new').length;
+		this.isNew = hasNewSpan && els.titleDiv.find('span.new').text().toLowerCase().indexOf('new') != -1;
 		
 		this.isEntered = els.post.hasClass('fade');
 		this.isContributorOnly = !!els.descriptionDiv.has('.contributor_only').length;
@@ -130,8 +128,12 @@ function Giveaway(obj) {
 		this.isCommentable = null; //TODO: dunno how
 		
 		this.titleText = els.titleDiv.text().trim();
-		var copiesMatch = this.titleText.match(/\(([0-9]*)\s*Copies\)/i);
-		this.copies = parseInt(copiesMatch ? copiesMatch[1] : 1);
+		var copiesMatch = this.titleText.match(/\((.*)\s*Copies\)/i);
+		var copiesNumber = "1";
+		if(copiesMatch) {
+			copiesNumber = copiesMatch[1].replace(/([^0-9*])/g, '');
+		}
+		this.copies = parseInt(copiesNumber);
 		this.points = parseInt(this.titleText.replace(/.*\(([0-9]*)P\).*/i, "$1"));
 		this.pirceUSD = null; //TODO: process after fetch !==========
 		
@@ -146,11 +148,11 @@ function Giveaway(obj) {
 		
 		var authorAvatarStyle = els.centerDiv.children('.avatar').attr('style');
 		
-		this.isPinned = !!authorAvatarStyle;
-		this.authorAvatar = authorAvatarStyle ? authorAvatarStyle.replace(/.*url\(([^\)]*)\).*/i, "$1") : "no-image.png";
+		this.isPinned = !authorAvatarStyle;
+		this.authorAvatar = authorAvatarStyle ? authorAvatarStyle.replace(/.*url\(([^\)]*)\).*/i, "$1") : "img/no-image.png";
 		
-		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/ig, ''));
-		this.comments = parseInt(els.entriesDiv.children('span').last().text().trim().replace(/([^0-9]*)/ig, ''));
+		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/g, ''));
+		this.comments = parseInt(els.entriesDiv.children('span').last().text().trim().replace(/([^0-9]*)/g, ''));
 		
 		this.appLogo = els.rightDiv.find('img').attr('src');
 		if(this.appLogo.indexOf('://') == -1) {

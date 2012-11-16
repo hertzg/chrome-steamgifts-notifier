@@ -14,7 +14,8 @@
 			checkInterval: 180000, //3 min
 			lastUpdate: 0,
 			ticks: 0,
-			posts: []
+			posts: [],
+			firstSortKey: 'timeEnd'
 		};
 		
 		//== Methods
@@ -38,6 +39,7 @@
 		
 		this.initStorage = function() {
 			this.load();
+			this._data = $.extend(true, this.defaults, this._data);
 		};
 		
 		this.get = function(key) {

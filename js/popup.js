@@ -8,6 +8,7 @@ $(document).ready(function(){
 	
 	backgroundThread.clearBadge();
 	
+	$('#sort-'+Config.get('firstSortKey')).addClass('ui-btn-active')
 	
 	$('#reloadData').click(function(){
 		$.mobile.loading( 'show', {
@@ -24,6 +25,21 @@ $(document).ready(function(){
 		
 	});
 	
+	$('#sort-timeStart').click(function(){
+		Config.set('firstSortKey', 'timeStart');
+		render();
+	});
+	
+	$('#sort-timeEnd').click(function(){
+		Config.set('firstSortKey', 'timeEnd');
+		render();
+	});
+	
+	$('#sort-points').click(function(){
+		Config.set('firstSortKey', 'points');
+		render();
+	});
+			
 	$('#refreshData').click(function(){
 		render();
 	});
@@ -63,16 +79,16 @@ function render(){
 	});
 	
 	Config.get('posts').sort(function(a, b){	
-		var ac = Math.round((1/(a.entries ? a.entries+1 : NaN))*10000)/100,
-			bc = Math.round((1/(b.entries ? b.entries+1 : NaN))*10000)/100;
+		var ac = (1/(a.entries ? a.entries+1 : NaN)),
+			bc =((1/(b.entries ? b.entries+1 : NaN)));
 		
-		if(a.timeEnd == b.timeEnd) {
+		if(a[Config.get('firstSortKey')] == b[Config.get('firstSortKey')]) {
 			if(ac == bc || isNaN(ac) || isNaN(bc)) {
 				return 0;
 			}
 			return ac > bc ? -1 : 1;
 		}
-		return a.timeEnd < b.timeEnd ? -1 : 1;
+		return a[Config.get('firstSortKey')] < b[Config.get('firstSortKey')] ? -1 : 1;
 	});
 	
 	listEl.html("");
@@ -84,16 +100,18 @@ function render(){
 						<p>Hey Stephen, if you\'re available at 10am tomorrow, we\'ve got a meeting with the jQuery team.</p>\
 						<p class="ui-li-aside"><strong>6:24</strong>PM</p>\
 				</a></li>');*/
-				
-			var chance = (Math.round((1/(v.entries ? v.entries+1 : NaN))*10000)/100);
+			
+			var rawChance = 1/(v.entries ? v.entries+1 : NaN);
+			var chance = (Math.round(rawChance*10000)/100);
+			
 			var color = "", keyword = "";
-			if(chance < 1) {
+			if(rawChance < 1) {
 				color = "255, 0, 0, 0.15";
 				keyword = ":low :bad :red";
-			} else if(1 <= chance && chance < 10) {
+			} else if(1 <= rawChance && rawChance < 10) {
 				color = "255, 255, 0, 0.15";
 				keyword = ":medium :normal :yellow";
-			} else if(chance >= 10) {
+			} else if(rawChance >= 10) {
 				color = "0, 255, 0, 0.15";
 				keyword = ":high :green :good";
 			} else {
@@ -103,13 +121,15 @@ function render(){
 			
 			listEl.append('\
 				<li>\
-					<a href="http://www.steamgifts.com'+v.href+'" target="_blank" style="background-color: rgba('+color+') !important;">\
-						<img src="'+v.authorAvatar+'" title="'+v.authorName+'" style="margin-top: 14px; margin-left: 8px;">\
-						<h3>'+v.title+'</h3>\
-						<p>Points: <strong>'+(v.points || '???')+'</strong> &bull; Copies: <strong>'+v.copies+'</strong> &bull; by <strong>'+v.authorName+'</strong> <p>\
-						<p>Entries: <strong>'+v.entries+'</strong> &bull; Comments: <strong>'+v.comments+'</strong></p>\
-						<span class="ui-li-count">'+((Math.round((1/(v.entries ? v.entries : NaN))*10000)/100)||"?")+'%</span>\
-						<p class="ui-li-aside"><strong>'+v.timeEndText+'</strong> left</p>\
+					<a href="http://www.steamgifts.com'+v.href+'" target="_blank" style="background-color: rgba('+color+') !important;" class="details">\
+						<img src="'+v.appLogo+'" alt="by '+v.authorName+'" title="by '+v.authorName+'" class="logo">\
+						<div class="content-container">\
+							<h3 title="'+v.title+'">'+v.title+'</h3>'+(v.isNew ? '<span class="icon icon-new" title="New">&nbsp;</span>' : '')+''+(v.isPinned ? '<span class="icon icon-pinned" title="Pinned">&nbsp;</span>' : '')+'<br />\
+							<span class="icon icon-copies" title="Copies">'+v.copies+'</span> &bull; <span class="icon icon-points" title="Points">'+(v.points || '???')+'</span> &bull;\
+							<span class="icon icon-comments" title="Comments">'+v.comments+'</span> &bull; <span class="icon icon-entries" title="Entries">'+v.entries+'</span><br/>\
+							<span class="icon icon-timestarted" title="Time Started">'+v.timeStartText+' ago</span> &bull; <span class="icon icon-timeleft" title="Time left">'+v.timeEndText+' left</span>\
+						</div>\
+						<div style="clear: both !important;"></div>\
 						<div style="display: none;">'+keyword+'</div>\
 					</a>\
 					<a data-icon="'+(v.isEntered ? "check" : "star")+'" id="" href="#act-'+v.uid+'"></a>\

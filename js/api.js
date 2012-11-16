@@ -96,7 +96,13 @@ function API() {
 	this.processGiveaways = function(html) {
 		var arr = [];
 		$('.post', html).each(function(idx, item){
-			arr.push(that.processGiveaway(item));
+			if($(item).children('.left').length > 0) {
+				arr.push(that.processGiveaway(item));
+			} else {
+				$(item).children('div').each(function(idx, devPost) {
+					arr.push(that.processGiveaway(devPost));
+				})
+			}
 		});
 		return arr;
 	};

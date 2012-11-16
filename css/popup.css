@@ -1,15 +1,115 @@
 /* CSS for Gmail Checker popup.html */
 
+* {
+	margin: 0;
+}
+
 html, body
 {
-	width: 98%;
+	width: 600px;
 	min-width: 400px;
-	max-height: 800px;
 	overflow: auto;
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 }
 
 a, a:hover, a:active, a:link, a:visited {
 	color : inherit;
+	margin: 0 !important;
+}
+
+h1, h2, h3, h3, h5, h6 {
+	text-overflow: clip !important;
+	overflow: visible;
+}
+
+#list a img.logo {
+	max-width: none !important;
+	position: relative !important;
+	-webkit-border-radius: 5px !important;
+	width: 184px !important;
+	height: 69px !important;
+	z-index: 100 !important;
+}
+
+#list a {
+	padding-left: 0 !important;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+#list a.details {
+	padding-top: 5px !important;
+	padding-left: 5px !important;
+	padding-bottom: 5px !important;
+	padding-right: 50px !important;
+}
+
+#list h3 {
+	display: inline-block !important;
+	position: relative !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	font-size: 16px !important;
+	text-overflow: ellipsis !important;
+	width: 285px;
+}
+
+.content-container {
+	position: relative !important;
+	font-weight: normal !important;
+	font-size: 13px !important;
+	line-height: 23px !important;
+}
+
+.icon {
+	position: relative !important;
+	display: inline-block !important;
+	min-width: 16px !important;
+	min-height: 16px !important;
+	padding: 0px !important;
+	margin: 0px !important;
+	padding-left: 20px !important;
+	background-repeat: no-repeat !important;
+	background-position: left middle !important;
+}
+
+.icon-new {
+	background-image: url(../img/new.png) !important;
+}
+
+.icon-soon {
+	background-image: url(../img/soon.png) !important;
+}
+
+.icon-copies {
+	background-image: url(../img/copies.png) !important;
+}
+
+.icon-entries {
+	background-image: url(../img/entries.png) !important;
+}
+
+.icon-comments {
+	background-image: url(../img/comments.png) !important;
+}
+
+.icon-points {
+	background-image: url(../img/points.png) !important;
+}
+
+.icon-timestarted {
+	background-image: url(../img/timestarted.png) !important;
+}
+
+.icon-timeleft {
+	background-image: url(../img/timeleft.png) !important;
+}
+
+.icon-author {
+	background-image: url(../img/author.png) !important;
+}
+
+.icon-pinned {
+	background-image: url(../img/pinned.png) !important;
 }
