@@ -1,5 +1,18 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
+More interesting thigs are on dev branch ;)
+  
+## Instalation
+Simple as [click here to Install from Google Chrome Store (Free)](https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen)
+<p align="center">
+  <a title="Install from Google Store" alt="Install from Google Store" href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img src="http://cdn.appstorm.net/web.appstorm.net/files/2010/12/Chrome-Store.png" /></a>
+</p>
 
+## Screenshot
+<p align="center">
+  <a href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img title="SteamGifts Notifier v1.1.0.9" alt="SteamGifts Notifier v1.1.0.9" src="https://lh3.googleusercontent.com/NcOjcSMFM0zuCOU7KAPxSHoKwPqc4pemhJ-0KcWjfwAdPVrHmga7EHoA46EzlvvDrIoX1KaNMQ=s640-h400-e365-rw" /></a>
+</p>
+
+## Changelog
 # v 1.1.0.9 - 16.11.2012
 - Added Winning chance icon
 - Improved Giveaway Parsing
