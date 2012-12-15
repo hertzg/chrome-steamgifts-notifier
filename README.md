@@ -1,5 +1,5 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
-More interesting thigs are on dev branch ;)
+More interesting things are on dev branch ;)
   
 ## Instalation
 Simple as [click here to Install from Google Chrome Store (Free)](https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen)
@@ -13,7 +13,7 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 </p>
 
 ## Changelog
-# v 1.1.0.9 - 16.11.2012
+#### v 1.1.0.9 - 16.11.2012
 - Added Winning chance icon
 - Improved Giveaway Parsing
 - Improved Closed giveaway detection
@@ -21,7 +21,7 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 - Improved Author avatar parsing
 - Fixed coloring issue
 
-# v 1.1.0.8 - 16.11.2012
+### v 1.1.0.8 - 16.11.2012
 - Added Sorting feature (Yay!)
 - New Design (Important party :( )
 - Removed Scrollbar to free up some more space
@@ -32,21 +32,21 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 - Improved entries and comments parsing
 - Tons of improvements...
 
-# v 1.1.0.7 - 15.11.2012
+### v 1.1.0.7 - 15.11.2012
 - Fixed [#9](https://github.com/hertzg/chrome-steamgifts-notifier/issues/9)
 - Fixed [#10](https://github.com/hertzg/chrome-steamgifts-notifier/issues/10)
 - Implemented [#7](https://github.com/hertzg/chrome-steamgifts-notifier/issues/7)
 - Fixed [#12](https://github.com/hertzg/chrome-steamgifts-notifier/issues/12)
 
-# v 1.1.0.6b - 14.11.2012
+### v 1.1.0.6b - 14.11.2012
 - Added copies parsing #4
 - Added configuration manager class #7
 - Fixed points being null when not logged into steamgifts #5
 
-# v1.1.0.5b - 13.11.2012
+### v1.1.0.5b - 13.11.2012
 - Fixed Issue #2
 
-# v1.1.0.4b - 12.11.2012
+### v1.1.0.4b - 12.11.2012
 - Fixed entries & comments parsing
 - Added loading indicator
 - Fixed issue with page not being updated on manual reload
@@ -60,10 +60,10 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 - *Added Alert notification!*
 - Added point difference indicator (when changed)
 
-# v1.1.0.3b - 12.11.2012
+### v1.1.0.3b - 12.11.2012
 - Minor bugfixes
 
-# v1.1.0.2b - 12.11.2012
+### v1.1.0.2b - 12.11.2012
 - Moved to more clean way of crawling and displaying giveaways
 - Improved simple chance calculation
 - Crawler Logic Rewritten 
@@ -75,14 +75,14 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 - Added trail date parsing function
 - Refactoring (70% Done)
 
-# v1.1.0.1a - 12.11.2012
+### v1.1.0.1a - 12.11.2012
 - Updated jQuery Mobile to latest final release v1.2.0
 - Updated jQuery Library to latest version
 - SteamGifts api (Non official parsing html)
 - Migrating to "OO style"
 - REFACTORING.... (Hell yeah!)
 
-# v1.1.0 - 11.11.2012
+### v1.1.0 - 11.11.2012
 - Forked from Original sorce
 - Made working with new security policy
 - Migrated to manifest version 2
