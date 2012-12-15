@@ -14,14 +14,12 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 
 ## Changelog
 
-### v 1.1.0.11 - 15.12.2012 - Unpublished
+### v 1.2
 - Moving from jQuery to native JS
 - Moved from $.get to  native XHR request (oh jQuery, appears that u suck too)
 - Temporal fix for images loading when initializing jquery object on html (seems so)
 - Moving to long lived connections for extension interop
 - Some more partial imporvements
-
-### v 1.1.0.10 - 04.12.2012 - Unpublished
 - Improved Winning odds calculation (Now counts copies)
 - Configuration resets with version change
 - Added contributor ammount parsing
