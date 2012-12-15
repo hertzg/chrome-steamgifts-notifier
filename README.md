@@ -1,6 +1,38 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
+  
+## Instalation
+Simple as [click here to Install from Google Chrome Store (Free)](https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen)
+<p align="center">
+  <a title="Install from Google Store" alt="Install from Google Store" href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img src="http://cdn.appstorm.net/web.appstorm.net/files/2010/12/Chrome-Store.png" /></a>
+</p>
 
-# v 1.1.0.9 - 16.11.2012
+## Screenshot
+<p align="center">
+  <a href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img title="SteamGifts Notifier v1.1.0.9" alt="SteamGifts Notifier v1.1.0.9" src="https://lh3.googleusercontent.com/NcOjcSMFM0zuCOU7KAPxSHoKwPqc4pemhJ-0KcWjfwAdPVrHmga7EHoA46EzlvvDrIoX1KaNMQ=s640-h400-e365-rw" /></a>
+</p>
+
+
+## Changelog
+
+### v 1.1.0.11 - 15.12.2012 - Unpublished
+- Moving from jQuery to native JS
+- Moved from $.get to  native XHR request (oh jQuery, appears that u suck too)
+- Temporal fix for images loading when initializing jquery object on html (seems so)
+- Moving to long lived connections for extension interop
+- Some more partial imporvements
+
+### v 1.1.0.10 - 04.12.2012 - Unpublished
+- Improved Winning odds calculation (Now counts copies)
+- Configuration resets with version change
+- Added contributor ammount parsing
+- Fixed search clear button glitch
+- Fixed pinneed and new icon glitches
+- Implemented Number shortener (eg: 1000 -> 1k)
+- Redisigned a bit to cleanup some space for new changes ;)
+- Moving to chrome extension messaging for "IPC" (50% Done)
+- Giveaway can now be compared using equals method
+
+### v 1.1.0.9 - 16.11.2012 - PUBLISHED VERSION
 - Added Winning chance icon
 - Improved Giveaway Parsing
 - Improved Closed giveaway detection
@@ -8,7 +40,7 @@ This is an extension for Google Chrome browser for SteamGifts.com website.
 - Improved Author avatar parsing
 - Fixed coloring issue
 
-# v 1.1.0.8 - 16.11.2012
+### v 1.1.0.8 - 16.11.2012
 - Added Sorting feature (Yay!)
 - New Design (Important party :( )
 - Removed Scrollbar to free up some more space
@@ -19,21 +51,21 @@ This is an extension for Google Chrome browser for SteamGifts.com website.
 - Improved entries and comments parsing
 - Tons of improvements...
 
-# v 1.1.0.7 - 15.11.2012
+### v 1.1.0.7 - 15.11.2012
 - Fixed [#9](https://github.com/hertzg/chrome-steamgifts-notifier/issues/9)
 - Fixed [#10](https://github.com/hertzg/chrome-steamgifts-notifier/issues/10)
 - Implemented [#7](https://github.com/hertzg/chrome-steamgifts-notifier/issues/7)
 - Fixed [#12](https://github.com/hertzg/chrome-steamgifts-notifier/issues/12)
 
-# v 1.1.0.6b - 14.11.2012
+### v 1.1.0.6b - 14.11.2012
 - Added copies parsing #4
 - Added configuration manager class #7
 - Fixed points being null when not logged into steamgifts #5
 
-# v1.1.0.5b - 13.11.2012
+### v1.1.0.5b - 13.11.2012
 - Fixed Issue #2
 
-# v1.1.0.4b - 12.11.2012
+### v1.1.0.4b - 12.11.2012
 - Fixed entries & comments parsing
 - Added loading indicator
 - Fixed issue with page not being updated on manual reload
@@ -47,10 +79,10 @@ This is an extension for Google Chrome browser for SteamGifts.com website.
 - *Added Alert notification!*
 - Added point difference indicator (when changed)
 
-# v1.1.0.3b - 12.11.2012
+### v1.1.0.3b - 12.11.2012
 - Minor bugfixes
 
-# v1.1.0.2b - 12.11.2012
+### v1.1.0.2b - 12.11.2012
 - Moved to more clean way of crawling and displaying giveaways
 - Improved simple chance calculation
 - Crawler Logic Rewritten 
@@ -62,14 +94,14 @@ This is an extension for Google Chrome browser for SteamGifts.com website.
 - Added trail date parsing function
 - Refactoring (70% Done)
 
-# v1.1.0.1a - 12.11.2012
+### v1.1.0.1a - 12.11.2012
 - Updated jQuery Mobile to latest final release v1.2.0
 - Updated jQuery Library to latest version
 - SteamGifts api (Non official parsing html)
 - Migrating to "OO style"
 - REFACTORING.... (Hell yeah!)
 
-# v1.1.0 - 11.11.2012
+### v1.1.0 - 11.11.2012
 - Forked from Original sorce
 - Made working with new security policy
 - Migrated to manifest version 2
@@ -78,40 +110,40 @@ This is an extension for Google Chrome browser for SteamGifts.com website.
 
 ------
 
-# v1.0.10
+### v1.0.10
 - remove zo's script
 
-# v1.0.9
+### v1.0.9
 - fix zo's script loading url
 - fix data extraction for new design
 - add autoupdate
 
-# v1.0.7
+### v1.0.7
 - fix pages where enhancement script is injected
 
-# v1.0.6
+### v1.0.6
 - load Zo script directly from google code (no need for updates anymore :D)
 
-# v1.0.5
+### v1.0.5
 - integrate Zo enhancement script  
 - fix link to main page  
 
-# v1.0.4
+### v1.0.4
 - new design (powered by jquery mobile)
 - added highlighting of new items
 - added home button to open steamgifts.com
 - added removal of expired giveaways
 - increased refresh time to 10 mins
 
-# v1.0.3
+### v1.0.3
 - fix autorefresh bug (finnaly got it!)
 - add last refresh time to tooltip
 
-# v1.0.2
+### v1.0.2
 - added refresh button
 - fix autorefresh bug
 - fix sorting
 
-# v1.0.1
+### v1.0.1
 - creation and end time is now stored as js Date type
 - added UI sorting options
