@@ -30,6 +30,13 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 - Redisigned a bit to cleanup some space for new changes ;)
 - Moving to chrome extension messaging for "IPC" (50% Done)
 - Giveaway can now be compared using equals method
+- Implemented status broadcasting
+- Implemented gift rendering via new IPC
+- Implemented loading overlay
+- Fixed userHref being undefined
+- Added Spacer rendering feature to BoxTemplate
+- Made page update dynamically (need to figure out sorting)
+- Implmented Icon badge animation
 
 ### v 1.1.0.9 - 16.11.2012 - PUBLISHED VERSION
 - Added Winning chance icon
