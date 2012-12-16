@@ -1,33 +1,33 @@
 (function(){
-	console.log("Init...");
+	var hzApi = new API();
+	
 	chrome.extension.onConnect.addListener(function(port) {
 		if(port.name == "digest") {
-			
 			Ports.add(port);
 			
 		} else if(port.name == 'interop') {
 			
 			port.onMessage.addListener(function(message, port){
+				
 				var op;
 				if(typeof message == 'object') {
 					var op = message.op;
 				}
 				
+				function sendResponse(response, err) {
+					port.postMessage({
+						request: message,
+						response: response,
+						err: err
+					});
+				}
+				
 				switch(op) {
-					case "getPosts":
-						
-						if(lastCrawledGifts && !lastCrawledGifts.length) {
-							console.log("empty");
-							_checkGiveawaysIntervalHandle(function(){
-								console.log('crawled');
-								sendResponse(lastCrawledGifts);
-								return false;
-							});
-						} else {
-							console.log('send last');
-							sendResponse(lastCrawledGifts);
-						}
-						
+					case "init":
+						sendResponse({
+							user: hzApi.getUserInfo(),
+							gifts: lastCrawledGifts
+						});
 					break;
 					
 					case 'enterGiveaawy' :
@@ -45,7 +45,7 @@
 			});
 			
 			port.onDisconnect.addListener(function(port){
-				console.log('interop client disconnected');
+				console.log('disconnected', port);
 			});
 		}
 	});
@@ -93,9 +93,6 @@
 		};
 	});
 
-	console.log("Init API...");
-	var hzApi = new API();
-
 	var _checkGiveawaysIntervalHandle;
 	function resetInterval() {
 		_checkGiveawaysIntervalHandle = window.clearInterval(_checkGiveawaysIntervalHandle);
@@ -104,43 +101,59 @@
 	
 	var lastCrawledGifts = [];
 	function checkGiveawaysIntervalHandler(cb) {
-		console.log('Tick..');
-		chrome.browserAction.setTitle({title:'Checking for new results'});
+		Ports.digest({
+			type: 'status',
+			code: 1,
+			msg: 'Loading...'
+		});
 		
+		setTimeout(function(){
+			startAnimateBadgeText();
+		}, 0);
+		chrome.browserAction.setTitle({title:'Checking for new results'});
+
 		hzApi.getGiveaways(API.STATUS_OPEN, 1, function(arr){
-			var gifts = [],
-				giftsNew = [];
+			var giftsAdd = [],
+				giftsDel = [];
 			
 			arr.forEach(function(gift){
 				var obj = gift.toObject();
-				gifts.push(obj);
 				
 				if(lastCrawledGifts.length) {
-				
+					
 					var found = false;
 					for(var i=0; i<lastCrawledGifts.length; i++) {
-						var lgift = lastCrawledGifts[i];
-						if(lgift.equals(gift)) {
+						if(lastCrawledGifts[i].equals(gift)) {
 							found = true;
 							break;
 						}
 					};
 					
-					if(!found) giftsNew.push(gift);
+					if(!found) {
+						giftsAdd.push(gift);
+					} else {
+						//giftsDel.push(gift);
+					}
+					
 				} else {
-					giftsNew.push(gift);
+					giftsAdd.push(gift);
 				}
 			});
 			
-			
 			lastCrawledGifts = arr;
+			
+			setTimeout(function(){
+				stopAnimateBadgeText();
+			}, 1000);
+			
+			
 			var result = {
 				type: 'digest',
 				user: hzApi.getUserInfo(),
-				giftsNew: giftsNew,
-				gifts: gifts,
-				date: new Date()
-			};
+				add: giftsAdd,
+				//del: giftsDel,
+				time: new Date().getTime()
+			};			
 			
 			var res = true;
 			if(cb) {
@@ -149,13 +162,24 @@
 			
 			if(res === false) return;
 			
-			if(result.giftsNew.length) Ports.digest(result);
+			var msg = "Waiting...";
+			if(result.add.length) {
+				msg = 'Found '+result.add.length + " new gift(s)";
+			}
+			
+			Ports.digest({
+				type: 'status',
+				code: 0,
+				msg: msg
+			});
+			Ports.digest(result);
 		});
 	}
 	
 	Ports.onMessage = function(obj, port){
 		
 		if(obj == 'checkNow') {
+			
 			checkGiveawaysIntervalHandler(function(result){
 				port.postMessage(result);
 				return false;
@@ -172,8 +196,26 @@
 		
 	};
 	
-	console.log("First Crawl");
 	checkGiveawaysIntervalHandler();
-	console.log("Start interval");
 	resetInterval();
+	
+	var _animationHandle;
+	function startAnimateBadgeText() {
+	
+		if(_animationHandle) {
+			return;
+		}
+	
+		var tick = 0;
+		_animationHandle = setInterval(function(){		
+			var sprites = [	'    ',	':   ',	'::  ',	'::: ',	'::::',	' :::',	'  ::',	'   :'];
+			chrome.browserAction.setBadgeText({ text: sprites[tick++]});
+			if(tick >= sprites.length) tick = 0;
+		}, 100);
+	}
+	
+	function stopAnimateBadgeText(){
+		if(_animationHandle) _animationHandle = clearInterval(_animationHandle);
+		chrome.browserAction.setBadgeText({text:''});
+	}
 })();

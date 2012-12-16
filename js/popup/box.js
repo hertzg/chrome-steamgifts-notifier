@@ -49,7 +49,12 @@ var BoxTemplate;
 			
 			return text;
 		}
-	
+		
+		this.renderSpacer = function() {
+			var div = document.createElement('div');
+			div.className = 'spacer';
+			return div;
+		};
 	
 		this.renderTitle = function(obj) {
 		
@@ -259,6 +264,8 @@ var BoxTemplate;
 		
 			var boxDiv = document.createElement('div');
 			boxDiv.classList.add('box');
+			boxDiv.setAttribute('id', obj.uid);
+			
 			
 			if(obj.winChance < 0.01) {
 				boxDiv.classList.add("red");

@@ -76,7 +76,19 @@ img {
 }
 
 .header .center h2 {
-	
+	margin: 0;
+	margin-top: 5px;
+	padding: 0;
+}
+
+.header span.red {
+	color: #ff0000;
+	font-weight: bold;
+}
+
+.header span.green {
+	color: #00ff00;
+	font-weight: bold;
 }
 
 .filter {
@@ -88,6 +100,24 @@ img {
 	text-align: center;
 }
 
+.hide {
+	display: none;
+	visibility: hidden;
+}
+
+.loading {
+	opacity: 0.4;
+	background-color: #000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	color: #fff;
+	font-weight: bold;
+	font-size: 18px;
+	width: 100%;
+	text-align: center;
+	z-index: 1000;
+}
 
 .box {
 	border: none;

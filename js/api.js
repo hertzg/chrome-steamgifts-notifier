@@ -102,7 +102,7 @@ function API() {
 		return {
 			isAuthorized: this.isAuthorized,
 			username: this.username,
-			usernameHref: this.usernameHref,
+			userHref: this.userHref,
 			points: this.points,
 			pointsDiff: this.pointsDiff
 		};
