@@ -23,9 +23,17 @@ var BoxTemplate;
 			}	
 		}
 		
+		function formatDate(d) {
+			if(!d) return;
+			if(d.constructor == Number) {
+				d = new Date();
+			}
+			
+			return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+		}
+		
 		function shortenTimeText(text) {
 			if(!text) return text;
-		
 			var map = {
 				" seconds": 's',
 				" second": 's',
@@ -139,6 +147,9 @@ var BoxTemplate;
 			var copiesValueTd = document.createElement('td');
 			copiesValueTd.innerText = shortenNumber(obj.copies);
 			
+			copiesIconTd.title = "Number of copies";
+			copiesValueTd.title = "Number of copies";
+			
 
 			var entriesIconTd = iconTd.cloneNode();
 			var entriesIconImg = iconImg.cloneNode();
@@ -147,6 +158,8 @@ var BoxTemplate;
 			var entriesValueTd = document.createElement('td');
 			entriesValueTd.innerText = shortenNumber(obj.entries);
 			
+			entriesIconTd.title = "Number of entries (Not including you)";
+			entriesValueTd.title = "Number of entries (Not including you)";
 			
 			var winChanceIconTd = iconTd.cloneNode();
 			var winChanceIconImg = iconImg.cloneNode();
@@ -155,6 +168,8 @@ var BoxTemplate;
 			var winChanceValueTd = document.createElement('td');
 			winChanceValueTd.innerText = (Math.round(obj.winChance*10000)/100)+'%';
 			
+			winChanceIconTd.title = 'Odds (Chance) of winning for entry';
+			winChanceValueTd.title = 'Odds (Chance) of winning for entry';
 			
 			tr1.appendChild(copiesIconTd);
 			tr1.appendChild(copiesValueTd);
@@ -177,12 +192,19 @@ var BoxTemplate;
 			var pointsValueTd = document.createElement('td');
 			pointsValueTd.innerText = shortenNumber(obj.points);
 			
+			pointsIconTd.title = 'Points required to enter this giveaway';
+			pointsValueTd.title = 'Points required to enter this giveaway';
+			
+			
 			var commentsIconTd = iconTd.cloneNode();
 			var commentsIconImg = iconImg.cloneNode();
 			commentsIconImg.src = 'img/comments.png';
 			commentsIconTd.appendChild(commentsIconImg);
 			var commentsValueTd = document.createElement('td');
 			commentsValueTd.innerText = shortenNumber(obj.comments);
+			
+			commentsIconTd.titel = 'Number of comments';
+			commentsValueTd.title = 'Number of comments';
 			
 			var contributorIconTd = iconTd.cloneNode();
 			var contributorIconImg = iconImg.cloneNode();
@@ -204,6 +226,9 @@ var BoxTemplate;
 			contributorValueTd.innerText = usd;
 			
 			
+			contributorIconTd.title = 'Number of contributions needed to enter this giveaway (USD)';
+			contributorValueTd.title = 'Number of contributions needed to enter this giveaway (USD)';
+			
 			tr2.appendChild(pointsIconTd);
 			tr2.appendChild(pointsValueTd);
 			
@@ -224,12 +249,18 @@ var BoxTemplate;
 			var timestartedValueTd = document.createElement('td');
 			timestartedValueTd.innerText = obj.timeStartText;
 			
+			contributorIconTd.title = 'Created on '+formatDate(obj.timeStart)+' (approx)';
+			timestartedValueTd.title = 'Created on '+formatDate(obj.timeStart)+' (approx)';
+			
 			var timeleftIconTd = iconTd.cloneNode();
 			var timeleftIconImg = iconImg.cloneNode();
 			timeleftIconImg.src = 'img/timeleft.png';
 			timeleftIconTd.appendChild(timeleftIconImg);
 			var timeleftValueTd = document.createElement('td');
 			timeleftValueTd.innerText = obj.timeEndText;
+			
+			timeleftIconTd.title = 'Will end on '+formatDate(obj.timeEnd)+' (approx)';
+			timeleftValueTd.title = 'Will end on '+formatDate(obj.timeEnd)+' (approx)';
 			
 			var authorIconTd = iconTd.cloneNode();
 			var authorIconImg = iconImg.cloneNode();
@@ -243,6 +274,8 @@ var BoxTemplate;
 			authorLink.innerText = obj.authorName;
 			authorValueTd.appendChild(authorLink);
 			
+			authorIconTd.title = 'Giveaway author';
+			authorValueTd.title = 'Giveaway author';
 			
 			tr3.appendChild(timestartedIconTd);
 			tr3.appendChild(timestartedValueTd);
