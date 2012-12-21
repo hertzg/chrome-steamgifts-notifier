@@ -28,27 +28,27 @@
 		<div class="filter">
 			<div class="wrapper">
 				<b>Show:</b>
-				<select style="width: 110px;">
+				<select id='filterByStatus' style="width: 110px;">
 					<option>All</option>
 					<option>Public only</option>
 					<option>Group only</option>
 					<option>Contributor only</option>
 				</select> 
-				<input type="checkbox"> <b>Hide Unenterable*</b>
-				<input type="checkbox"> <b>Hide Entered</b>	&bull;		
+				<input id='filterOnlyEnterable' type="checkbox"> <b>Hide Unenterable*</b>
+				<input id='filterHideEntered' type="checkbox"> <b>Hide Entered</b>	&bull;		
 				<b>Smart order:</b>
-				<select style="width: 80px;">
-					<option>Ending soonest with Highest chance of wining</option>
-					<option>Newet with Highest chance of wining</option>
-					<option>Cheapest with Highest chance of wining</option>
+				<select id='filterOrderBy' style="width: 80px;">
+					<option value="soonest">Ending soonest with Highest chance of wining</option>
+					<option value="newest">Newest with Highest chance of wining</option>
+					<option value="cheapest">Cheapest with Highest chance of wining</option>
 				</select>
-				<input type="button" value="Sort"/><br/>
+				<input id='filterSort' type="button" value="Sort"/><br/>
 
 				<div style="display:inline-block; line-height: 20px; width: 470px">
-					<input type="text" style="width: 100%"/>
+					<input id="filterText" type="text" style="width: 100%"/>
 				</div>
 				<div style="display:inline-block;">
-					<input type='button' value="Search"><input type='button' value="Filter">
+					<input id='filterDoSearch' title="Performs search on the website and shows the results below" type='button' value="Search"><input id="filterDoFilter" title="Filters the results shown below" type='button' value="Filter">
 				</div>
 				<div class="clear"></div>
 			</div>
