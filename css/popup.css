@@ -127,7 +127,12 @@ img {
 	border-radius: 10px;
 	background-color: #eee;
 	box-shadow: 0 0 5px #555;
-	-webkit-transition: background-color .5s;
+	opacity: 1;
+	-webkit-transition: background-color .5s, opacity .5s;
+}
+
+.box.hidden {
+	opacity: 0;
 }
 
 .box:hover {

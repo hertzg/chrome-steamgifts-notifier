@@ -1,6 +1,12 @@
 var ListManager = function(listEl) {	
 	var that = this;
-	var boxMap = {};
+	
+	this.compareFn = function(){};
+	
+	var elList = [];
+		idMap = {},
+		sortMap = {};
+	
 
 	this.addObjRange = function(arr) {
 		arr.forEach(function(obj){
@@ -17,7 +23,12 @@ var ListManager = function(listEl) {
 	
 	this.addBox = function(boxEl, soft) {
 		var boxData = boxEl.data;
-		if(!soft) boxMap[boxData.uid] = boxEl;
+		
+		if(!soft) {
+			idMap[boxData.uid] = boxEl;
+			elList.oush(]
+		}
+		
 		listEl.appendChild(boxEl);
 	};
 	
@@ -39,17 +50,36 @@ var ListManager = function(listEl) {
 		listEl.insertBefore(boxEl, el);
 	};
 	
+	this.addBoxAfter = function(el, boxEl) {
+		that.addBoxBefore(el.nextSibling, boxEl);
+	};
+	
+	this.replaceBox = function(el, boxEl) {
+		this.addBoxBefore(el, boxEl);
+		this.removeBox(el);
+	};
+	
 	this.removeBoxAt = function(idx) {
 		var el = listEl.childNodes[idx];
 		that.removeBox(el);
 	};
 	
 	this.removeBox = function(boxEl, soft) {
-		if(!soft) delete boxMap[boxEl.data.uid];
-		listEl.removeChild(boxEl);
+		if(soft.constructor == Function) {
+			delete idMap[boxEl.data.uid];
+			$(boxEl).animate({
+				opacity: 0
+			}, 500, function(){
+				listEl.removeChild(boxEl);
+				soft();
+			});
+		} else {
+			if(!soft) delete idMap[boxEl.data.uid];
+			listEl.removeChild(boxEl);
+		}
 	};
 	
-	this.getBoxMap = function() {
+	this.getIdMap = function() {
 		return boxMap;
 	};
 

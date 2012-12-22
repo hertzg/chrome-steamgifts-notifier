@@ -199,6 +199,18 @@ function Giveaway(obj) {
 		return false;
 	};
 	
+	this.hasChanged = function(gift) {
+		if(!this.equals(gift)) return false;
+		
+		var keys = ['timeStart',  'timeEnd', 'entries', 'comments', 'isEntered'];
+		for(var i=0; i<keys.length; i++) {
+			if(this[keys[i]] != gift[keys[i]])
+				return false;
+		});
+		
+		return true;
+	};
+	
 	this.stringToMs = function(str) {
 		var str = str.toLowerCase();
 		var x = {  //Not great but I'm out of tea :(

@@ -21,8 +21,10 @@ $(function(){
 	window.ListMan = new ListManager(listEl);
 
 	function searchInList() {
-		filterDoFilterButton.onclick = null;
 		var search = filterText.value;
+		if(!search) return;
+	
+		filterDoFilterButton.onclick = null;
 		ListMan.runFilter(function(obj){
 			return obj.title.indexOf(search) != -1;
 		}, function(){
@@ -37,13 +39,20 @@ $(function(){
 			filterDoFilterButton.onclick = reset;
 		});
 	};
-
-	filterText.onchange = function() {
-		console.log(arguments);
-	}
-
-
-	filterDoFilterButton.addEventListener('click', searchInList);
+	filterDoFilterButton.onclick = searchInList;
+	
+	var _autoFilterTimeoutHandler = null;
+	filterText.onkeyup = function(){
+		_autoFilterTimeoutHandler = clearTimeout(_autoFilterTimeoutHandler);
+		_autoFilterTimeoutHandler = setTimeout(function(){
+			
+			
+			
+		}, 3000);
+	};
+	
+	
+	
 
 	var firstSortKeyMap = {
 		"soonest": 'timeEnd',

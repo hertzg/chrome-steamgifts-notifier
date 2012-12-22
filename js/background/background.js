@@ -114,25 +114,29 @@
 
 		hzApi.getGiveaways(API.STATUS_OPEN, 1, function(arr){
 			var giftsAdd = [],
-				giftsDel = [];
+				giftsUpdate = [];
 			
 			arr.forEach(function(gift){
 				var obj = gift.toObject();
 				
 				if(lastCrawledGifts.length) {
 					
-					var found = false;
+					var found = false,
+						changed = false;
 					for(var i=0; i<lastCrawledGifts.length; i++) {
 						if(lastCrawledGifts[i].equals(gift)) {
 							found = true;
+							changed = lastCrawledGifts[i].hasChanged(gift);
 							break;
 						}
 					};
 					
 					if(!found) {
 						giftsAdd.push(gift);
-					} else {
-						//giftsDel.push(gift);
+					}
+					
+					if(changed) {
+						giftsUpdate.push(gift);
 					}
 					
 				} else {
@@ -151,6 +155,7 @@
 				type: 'digest',
 				user: hzApi.getUserInfo(),
 				add: giftsAdd,
+				update: giftsUpdate,
 				//del: giftsDel,
 				time: new Date().getTime()
 			};			
