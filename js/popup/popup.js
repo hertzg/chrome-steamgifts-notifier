@@ -1,10 +1,56 @@
 $(function(){
 	
-	var pointsEl = document.getElementById('userPoints'),
+	var overlayEl = document.createElement('div'),
+		listEl = document.getElementById('list'),
+		pointsEl = document.getElementById('userPoints'),
 		pointsDiffEl = document.getElementById('userPointsDiff'),
 		userLink = document.getElementById('userLink'),
 		statusEl = document.getElementById('status');
 		
+	var filterOrderBy = document.getElementById('filterOrderBy'),
+		filterText = document.getElementById('filterText'),
+		filterDoFilterButton = document.getElementById('filterDoFilter');
+	
+	overlayEl.classList.add('loading');
+	overlayEl.innerHTML = "Loading...";
+	overlayEl.style.height = document.body.clientHeight;
+	overlayEl.style.lineHeight = document.body.clientHeight+20+'px';
+	document.body.appendChild(overlayEl);
+	
+
+	window.ListMan = new ListManager(listEl);
+
+	function searchInList() {
+		filterDoFilterButton.onclick = null;
+		var search = filterText.value;
+		ListMan.runFilter(function(obj){
+			return obj.title.indexOf(search) != -1;
+		}, function(){
+			function reset() {
+				filterDoFilterButton.onclick = null;
+				ListMan.reset(function(){
+					filterDoFilterButton.onclick = searchInList;
+				});
+			}
+
+
+			filterDoFilterButton.onclick = reset;
+		});
+	};
+
+	filterText.onchange = function() {
+		console.log(arguments);
+	}
+
+
+	filterDoFilterButton.addEventListener('click', searchInList);
+
+	var firstSortKeyMap = {
+		"soonest": 'timeEnd',
+		"cheapest": 'points',
+		"newest": 'timeStart'
+	};
+
 	function updateUserBar(user) {
 		
 		pointsEl.innerText = user.points;
@@ -44,28 +90,13 @@ $(function(){
 	}
 	
 	
-	var listEl = document.getElementById('list');
-	
-	var overlayEl = document.createElement('div');
-	overlayEl.classList.add('loading');
-	overlayEl.style.height = document.body.clientHeight;
-	overlayEl.style.lineHeight = document.body.clientHeight+20+'px';
-	
-	document.body.appendChild(overlayEl);
-	
-	overlayEl.innerHTML = "Loading...";
-	
 	var port = chrome.extension.connect({name: "interop"});
 	port.onMessage.addListener(function(obj){
 		if(obj.request.op == 'init') {
 			updateUserBar(obj.response.user);
-			obj.response.gifts.forEach(function(gift){
-				var el = BoxTemplate.render(gift), spacerEl = BoxTemplate.renderSpacer();
-				
-				listEl.insertBefore(spacerEl, listEl.firstChild);
-				listEl.insertBefore(el, spacerEl);
-			});
-			
+
+			ListMan.addObjRange(obj.response.gifts);	
+
 			$(overlayEl).animate({
 				opacity: 0
 			}, 500, function(){
@@ -79,15 +110,12 @@ $(function(){
 		overlayEl.innerHTML = 'Connection lost...';
 		overlayEl.classList.remove('hide');
 	});
-	
 	port.postMessage({op:'init'});
 	
 	var digestPort = chrome.extension.connect({name:"digest"});
-	
 	digestPort.onMessage.addListener(function(obj){
-		
-		console.log('digest', obj);
-		
+
+		//If its a Status Update
 		if(obj.type == 'status') {
 			processStatus(obj);
 			return;
@@ -100,25 +128,18 @@ $(function(){
 		
 		if(obj.add.length) {
 			obj.add.forEach(function(gift){
-				var el = BoxTemplate.render(gift), spacerEl = BoxTemplate.renderSpacer();
-				el.style.opacity = 0;
-				
-				listEl.insertBefore(el, listEl.firstChild);
-				if(el.nextSibling) {
-					listEl.insertBefore(spacerEl, el.nextSibling);
-				} else {
-					listEl.appendChild(spacerEl);
-				}
-				
-				$(el).animate({
-					opacity: 1	
+				var el = BoxTemplate.render(gift);
+				el.opacity = 0; //Hide the element after insertion
+				ListMan.addBoxFirst(el);
+				$(el).animate({ //Animate fade in effect
+					opacity: 1
 				}, 500);
-				
 			});
 		}
 	});
 	
 	digestPort.onDisconnect.addListener(function(){
-		console.log('digest port disconnected');
+		overlayEl.innerHTML = 'Connection lost...';
+		overlayEl.classList.remove('hide');
 	});
 });	

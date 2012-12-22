@@ -37,6 +37,9 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 - Added Spacer rendering feature to BoxTemplate
 - Made page update dynamically (need to figure out sorting)
 - Implmented Icon badge animation
+- Replaced Spacer with box margin bottom (why didnt i thing about that earlier)
+- Implemented ListManager (nice animations and great features)
+- Smoothed out a lot
 
 ### v 1.1.0.9 - 16.11.2012 - PUBLISHED VERSION
 - Added Winning chance icon

@@ -58,12 +58,6 @@ var BoxTemplate;
 			return text;
 		}
 		
-		this.renderSpacer = function() {
-			var div = document.createElement('div');
-			div.className = 'spacer';
-			return div;
-		};
-	
 		this.renderTitle = function(obj) {
 		
 			//div class='title'
@@ -298,6 +292,7 @@ var BoxTemplate;
 			var boxDiv = document.createElement('div');
 			boxDiv.classList.add('box');
 			boxDiv.setAttribute('id', obj.uid);
+			boxDiv.data = obj;
 			
 			
 			if(obj.winChance < 0.01) {
