@@ -88,11 +88,11 @@ function API() {
 	};
 	
 	this.getGiveaways = function(status, page, callback){
-		this._get('http://www.steamgifts.com/'+status+'/page/'+page, function(html){
+		this._get('http://www.steamgifts.com/'+status+'/page/'+page, function(html, code, text){
 			var safeHTML = that.replaceSrcs(html);
 		
 			var arr = that.processGiveaways(safeHTML);
-			callback(arr);
+			callback(arr, code, text);
 		});
 	};
 	
@@ -114,10 +114,12 @@ function API() {
 		
 		this.xhr.open("GET", url,true);
 		this.xhr.send();
-		this.xhr.onload = function(){			
+		this.xhr.onreadystatechange = function() {
+			if (that.xhr.readyState != 4)  { return; }
+			
 			that.parseUserInfo(that.xhr.responseText);
 			that.onStateChange(API.STATE_IDLE);
-			callback(that.xhr.responseText);
+			callback(that.xhr.responseText, that.xhr.status, that.xhr.statusText);
 		};
 	};
 	
@@ -131,6 +133,7 @@ function API() {
 					arr.push(that.processGiveaway(devPost.outerHTML));
 				})
 			}
+			//return false;
 		});
 		return arr;
 	};
