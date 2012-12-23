@@ -1,152 +1,226 @@
-function startAnimateBadgeText() {
-
-	if(_animationHandle) {
-		return;
-	}
-
-	var tick = 0;
-	_animationHandle = setInterval(function(){	
-		var sprites = [	'    ',	':   ',	'::  ',	'::: ',	'::::',	' :::',	'  ::',	'   :'];
-		chrome.browserAction.setBadgeText({ text: sprites[tick++]});
-		if(tick >= sprites.length) tick = 0;
-	}, 100);
-}
-
-function stopAnimateBadgeText(){
-	if(_animationHandle) _animationHandle = clearInterval(_animationHandle);
-	chrome.browserAction.setBadgeText({text:''});
-}
-
-function resetInterval() {
-	_checkGiveawaysIntervalHandle = window.clearInterval(_checkGiveawaysIntervalHandle);
-	_checkGiveawaysIntervalHandle = window.setInterval(checkGiveawaysIntervalHandler, 10000);
-}
-
-function checkGiveawaysIntervalHandler(cb) {
-	stopAnimateBadgeText();
-	startAnimateBadgeText();
-
-	chrome.browserAction.setTitle({title:'Checking for new results'});
-
-	hzApi.getGiveaways(API.STATUS_OPEN, 1, function(arr, code, text){
-
-		//TODO: restrict to maximum retries
-		if(code != 200) {
-			console.log('Received code', code, 'retrying...');
-			checkGiveawaysIntervalHandler();
-			return;
-		}
-
-		var giftsAdd = [],
-			giftsUpdate = [],
-			giftsRemove = [];
-		
-		arr.forEach(function(gift){
-			var obj = gift.toObject();
+(function(){
+	var hzApi = new API();
+	
+	chrome.extension.onConnect.addListener(function(port) {
+		if(port.name == "digest") {
+			Ports.add(port);
 			
-			if(lastCrawledGifts.length) {
+		} else if(port.name == 'interop') {
+			
+			port.onMessage.addListener(function(message, port){
 				
-				var found = false,
-					changed = false;
-				for(var i=0; i<lastCrawledGifts.length; i++) {
-					if(lastCrawledGifts[i].equals(gift)) {
-						found = true;
-						changed = lastCrawledGifts[i].hasChanged(gift);
-						break;
-					}
+				var op;
+				if(typeof message == 'object') {
+					var op = message.op;
 				}
+				
+				function sendResponse(response, err) {
+					port.postMessage({
+						request: message,
+						response: response,
+						err: err
+					});
+				}
+				
+				switch(op) {
+					case "init":
+						sendResponse({
+							user: hzApi.getUserInfo(),
+							gifts: lastCrawledGifts
+						});
+					break;
+					
+					case 'enterGiveaawy' :
+						sendResponse('soon');
+					break;
+					
+					case 'commentGiveaway' :
+						sendResponse('soon');
+					break;
+					
+					default: 
+						sendResponse('NotImplemented');
+					break;
+				}
+			});
+			
+			port.onDisconnect.addListener(function(port){
+				console.log('disconnected', port);
+			});
+		}
+	});
 
-				var remove = true;
-				for(var i=0; i<lastCrawledGifts.length; i++) {
-					if(lastCrawledGifts[i].uid == gift.uid){
-						remove = false;
-						break;
-					}
+	var Ports = new (function(){
+		var that = this;
+		var arr = [];
+		
+		this.onMessage = function(obj, port){};	
+		this.onDisconnect = function(port){};	
+		
+		this.add = function(port) {
+		
+			port.onMessage.addListener(function(obj, port){
+				that.onMessage(obj, port);
+			});
+			
+			port.onDisconnect.addListener(function(port){
+				that.onDisconnect(port);
+				that.remove(port);
+			});
+			
+			arr.push(port);
+		};
+		
+		this.remove = function(port) {		
+			for(var i=0; i<arr.length; i++) {
+				if(arr[i] == port) {
+					arr.splice(i, 1);
+					break;
 				}
+			}
+		}
+		
+		this.digest = function(obj) {
+			if(!arr.length) return;
+		
+			arr.forEach(function(port){
+				port.postMessage(obj);
+			});
+		};
+		
+		this.getArr = function() {
+			return arr;
+		};
+	});
+
+	var _checkGiveawaysIntervalHandle;
+	function resetInterval() {
+		_checkGiveawaysIntervalHandle = window.clearInterval(_checkGiveawaysIntervalHandle);
+		_checkGiveawaysIntervalHandle = window.setInterval(checkGiveawaysIntervalHandler, 5000);
+	}
+	
+	var lastCrawledGifts = [];
+	function checkGiveawaysIntervalHandler(cb) {
+		Ports.digest({
+			type: 'status',
+			code: 1,
+			msg: 'Loading...'
+		});
+		
+		setTimeout(function(){
+			startAnimateBadgeText();
+		}, 0);
+		chrome.browserAction.setTitle({title:'Checking for new results'});
+
+		hzApi.getGiveaways(API.STATUS_OPEN, 1, function(arr){
+			var giftsAdd = [],
+				giftsUpdate = [];
+			
+			arr.forEach(function(gift){
+				var obj = gift.toObject();
 				
-				if(!found) {
+				if(lastCrawledGifts.length) {
+					
+					var found = false,
+						changed = false;
+					for(var i=0; i<lastCrawledGifts.length; i++) {
+						if(lastCrawledGifts[i].equals(gift)) {
+							found = true;
+							changed = lastCrawledGifts[i].hasChanged(gift);
+							break;
+						}
+					};
+					
+					if(!found) {
+						giftsAdd.push(gift);
+					}
+					
+					if(changed) {
+						giftsUpdate.push(gift);
+					}
+					
+				} else {
 					giftsAdd.push(gift);
 				}
-				
-				if(changed) {
-					giftsUpdate.push(gift);
-				}
-
-				if(remove) {
-					giftsRemove.push(gift);
-				}
-			} else {
-				giftsAdd.push(gift);
+			});
+			
+			lastCrawledGifts = arr;
+			
+			setTimeout(function(){
+				stopAnimateBadgeText();
+			}, 1000);
+			
+			
+			var result = {
+				type: 'digest',
+				user: hzApi.getUserInfo(),
+				add: giftsAdd,
+				update: giftsUpdate,
+				//del: giftsDel,
+				time: new Date().getTime()
+			};			
+			
+			var res = true;
+			if(cb) {
+				res = cb(result);
 			}
+			
+			if(res === false) return;
+			
+			var msg = "Waiting...";
+			if(result.add.length) {
+				msg = 'Found '+result.add.length + " new gift(s)";
+			}
+			
+			Ports.digest({
+				type: 'status',
+				code: 0,
+				msg: msg
+			});
+			Ports.digest(result);
 		});
-		
-		lastCrawledGifts = arr;
-		
-		stopAnimateBadgeText();
-		
-		
-		lastResult = {
-			type: 'state',
-			user: hzApi.getUserInfo(),
-			add: giftsAdd,
-			update: giftsUpdate,
-			remove: giftsRemove,
-			time: new Date().getTime()
-		};
-
-		if(cb && cb(lastResult, arr) === false) return;
-
-		Digest.digest(lastResult);
-	});
-}
-
-var Digest = new PortManager(),
-	hzApi = new API();
-
-var lastCrawledGifts = [],
-	lastResult = null;
-
-var _animationHandle = null,
-	_checkGiveawaysIntervalHandle = null;
-
-Digest.onConnect = function(port) {
-	//console.log('Connected', port.portId_);
-	if(Digest.getPorts().length == 0) { //If he is the first client
-		//console.log('Start the interval');
-		resetInterval();
 	}
-	//console.log('Sending init');
-	checkGiveawaysIntervalHandler(function(result, all){ //Send him init
-		result.type = 'init';
-		result.add = all;
-		result.update = [];
-		result.remove = [];
-		port.postMessage(result);
-		//console.log('Sent!', result);
-		return false;
-	});
-};
-
-Digest.onDigest = function(obj, ports){
-	//console.log('Digest', ports, obj);
-};
-
-Digest.onMessage = function(obj, port) {
-	if(obj.type == 'refresh') {
-		checkGiveawaysIntervalHandler(function(obj){
-			obj.type = 'refresh';
-		});
-	} else {
-		port.postMessage('NotYetImplemented!');
+	
+	Ports.onMessage = function(obj, port){
+		
+		if(obj == 'checkNow') {
+			
+			checkGiveawaysIntervalHandler(function(result){
+				port.postMessage(result);
+				return false;
+			});
+			
+		} else if(obj == 'reload') {
+		
+			checkGiveawaysIntervalHandler(function(result){
+				port.postMessage(result);
+			});		
+		} else {
+			port.postMessage('NotYetImplemented!');
+		}
+		
+	};
+	
+	checkGiveawaysIntervalHandler();
+	resetInterval();
+	
+	var _animationHandle;
+	function startAnimateBadgeText() {
+	
+		if(_animationHandle) {
+			return;
+		}
+	
+		var tick = 0;
+		_animationHandle = setInterval(function(){		
+			var sprites = [	'    ',	':   ',	'::  ',	'::: ',	'::::',	' :::',	'  ::',	'   :'];
+			chrome.browserAction.setBadgeText({ text: sprites[tick++]});
+			if(tick >= sprites.length) tick = 0;
+		}, 100);
 	}
-};
-
-
-Digest.onDisconnect = function(port){
-	if(Digest.getPorts().length == 1) { //If this was the last client
-		//console.log('last client disconnected');
-		//_checkGiveawaysIntervalHandle = window.clearInterval(_checkGiveawaysIntervalHandle);
+	
+	function stopAnimateBadgeText(){
+		if(_animationHandle) _animationHandle = clearInterval(_animationHandle);
+		chrome.browserAction.setBadgeText({text:''});
 	}
-	//console.log('Disconnect', port.portId_);
-};
-
+})();

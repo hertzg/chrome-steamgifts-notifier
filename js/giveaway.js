@@ -168,7 +168,7 @@ function Giveaway(obj) {
 			this.appLogo = 'http://www.steamgifts.com'+this.appLogo;
 		}
 		
-		this.winChance = ((this.copies||1) / (this.entries + (this.isEntered ? -1 : 1)));
+		this.winChance = ((this.copies||1) / (this.entries - (this.isEntered ? 1 : 0)));
 		if(this.winChance > 1) {
 			this.winChance = 1;
 		}
@@ -200,12 +200,15 @@ function Giveaway(obj) {
 	};
 	
 	this.hasChanged = function(gift) {
+		if(!this.equals(gift)) return false;
+		
 		var keys = ['timeStart',  'timeEnd', 'entries', 'comments', 'isEntered'];
 		for(var i=0; i<keys.length; i++) {
 			if(this[keys[i]] != gift[keys[i]])
-				return true;
-		};
-		return false;
+				return false;
+		});
+		
+		return true;
 	};
 	
 	this.stringToMs = function(str) {
@@ -240,7 +243,7 @@ function Giveaway(obj) {
 	};
 	
 	this.toObject = function() {
-		var obj = Object.create(null);
+		var obj = {};
 		for(key in this) {
 			if(this.hasOwnProperty(key) && typeof this[key] != 'function') {
 				obj[key] = this[key];
@@ -261,17 +264,3 @@ Giveaway.fromObject = function(obj){
 	instance.initFromObject(obj);
 	return instance;
 };
-
-Giveaway.equals = function(obj1, obj2) {
-	if(obj1.equals) return obj1.equals(obj2);
-	if(obj2.equals) return obj2.equals(obj1);
-	var instance = Giveaway.fromObject(obj1);
-	return instance.equals(obj2);
-}
-
-Giveaway.hashChanged = function(obj1, obj2) {
-	if(obj1.hashChanged) return obj1.hashChanged(obj2);
-	if(obj2.hashChanged) return obj2.hashChanged(obj1);
-	var instance = Giveaway.fromObject(obj1);
-	return instance.hashChanged(obj2);
-}

@@ -31,10 +31,6 @@ var BoxTemplate;
 			
 			return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
 		}
-
-		function renderWinChance(winChance) {
-			return (Math.round(winChance*10000)/100)+'%'
-		}
 		
 		function shortenTimeText(text) {
 			if(!text) return text;
@@ -154,11 +150,7 @@ var BoxTemplate;
 			entriesIconImg.src = 'img/entries.png';
 			entriesIconTd.appendChild(entriesIconImg);
 			var entriesValueTd = document.createElement('td');
-			function setEntries(entries){
-				entriesValueTd.innerText = shortenNumber(entries);
-			}
-			setEntries(obj.entries);
-
+			entriesValueTd.innerText = shortenNumber(obj.entries);
 			
 			entriesIconTd.title = "Number of entries (Not including you)";
 			entriesValueTd.title = "Number of entries (Not including you)";
@@ -168,12 +160,8 @@ var BoxTemplate;
 			winChanceIconImg.src = 'img/gold.png';
 			winChanceIconTd.appendChild(winChanceIconImg);
 			var winChanceValueTd = document.createElement('td');
-			function setWinChance(winChance) {
-				winChanceValueTd.innerText = renderWinChance(obj.winChance);
-			}
-			setWinChance(obj.winChance);
+			winChanceValueTd.innerText = (Math.round(obj.winChance*10000)/100)+'%';
 			
-		
 			winChanceIconTd.title = 'Odds (Chance) of winning for entry';
 			winChanceValueTd.title = 'Odds (Chance) of winning for entry';
 			
@@ -207,10 +195,7 @@ var BoxTemplate;
 			commentsIconImg.src = 'img/comments.png';
 			commentsIconTd.appendChild(commentsIconImg);
 			var commentsValueTd = document.createElement('td');
-			function setComments(comments) {
-				commentsValueTd.innerText = shortenNumber(obj.comments);
-			}
-			setComments(obj.comments);
+			commentsValueTd.innerText = shortenNumber(obj.comments);
 			
 			commentsIconTd.titel = 'Number of comments';
 			commentsValueTd.title = 'Number of comments';
@@ -256,22 +241,20 @@ var BoxTemplate;
 			timestartedIconImg.src = 'img/timestarted.png';
 			timestartedIconTd.appendChild(timestartedIconImg);
 			var timestartedValueTd = document.createElement('td');
-			function setTimeStarted(timeStart, timeStartText) {
-				timestartedIconTd.title = timestartedValueTd.title = 'Created on '+formatDate(timeStart)+' (approx)';
-				timestartedValueTd.innerText = timeStartText;
-			}
-			setTimeStarted(obj.timeStart, obj.timeStartText);
+			timestartedValueTd.innerText = obj.timeStartText;
+			
+			contributorIconTd.title = 'Created on '+formatDate(obj.timeStart)+' (approx)';
+			timestartedValueTd.title = 'Created on '+formatDate(obj.timeStart)+' (approx)';
 			
 			var timeleftIconTd = iconTd.cloneNode();
 			var timeleftIconImg = iconImg.cloneNode();
 			timeleftIconImg.src = 'img/timeleft.png';
 			timeleftIconTd.appendChild(timeleftIconImg);
 			var timeleftValueTd = document.createElement('td');
-			function setTimeLeft(timeEnd, timeEndText) {
-				timeleftIconTd.title = timeleftValueTd.title = 'Will end on '+formatDate(timeEnd)+' (approx)';
-				timeleftValueTd.innerText = timeEndText;
-			}
-			setTimeLeft(obj.timeEnd, obj.timeEndText);
+			timeleftValueTd.innerText = obj.timeEndText;
+			
+			timeleftIconTd.title = 'Will end on '+formatDate(obj.timeEnd)+' (approx)';
+			timeleftValueTd.title = 'Will end on '+formatDate(obj.timeEnd)+' (approx)';
 			
 			var authorIconTd = iconTd.cloneNode();
 			var authorIconImg = iconImg.cloneNode();
@@ -300,13 +283,6 @@ var BoxTemplate;
 			infoTable.appendChild(tr3);	
 						
 			infoDiv.appendChild(infoTable);
-
-
-			infoDiv.setEntries = setEntries;
-			infoDiv.setComments = setComments;
-			infoDiv.setWinChance = setWinChance;
-			infoDiv.setTimeStart = setTimeStarted;
-			infoDiv.setTimeEnd = setTimeLeft;
 			
 			return infoDiv;
 		};
@@ -317,6 +293,7 @@ var BoxTemplate;
 			boxDiv.classList.add('box');
 			boxDiv.setAttribute('id', obj.uid);
 			boxDiv.data = obj;
+			
 			
 			if(obj.winChance < 0.01) {
 				boxDiv.classList.add("red");
@@ -344,12 +321,10 @@ var BoxTemplate;
 			logoDiv.className = "logo";
 			logoDiv.style.backgroundImage = 'url('+obj.appLogo+')';
 			
-			var titleDiv = this.renderTitle(obj);
-			boxDiv.appendChild(titleDiv);
+			boxDiv.appendChild(this.renderTitle(obj));
 			
 			descDiv.appendChild(logoDiv);
-			var infoDiv = this.renderInfo(obj);
-			descDiv.appendChild(infoDiv);
+			descDiv.appendChild(this.renderInfo(obj));
 			
 			var actionsDiv = document.createElement('div');
 			actionsDiv.className = 'actions';
@@ -407,23 +382,7 @@ var BoxTemplate;
 			descDiv.appendChild(clearDiv);
 			
 			boxDiv.appendChild(descDiv);
-
-			boxDiv.setFade = function(state) {
-				if(state) {
-					boxDiv.classList.add('fade');
-				} else {
-					boxDiv.classList.remove('fade');
-				}
-			}
-
-			boxDiv.getInfoDiv = function(){
-				return infoDiv;
-			};
-
-			boxDiv.getTitleDiv = function(){
-				return titleDiv;
-			};
-	
+							
 			return boxDiv;
 		};
 	})();
