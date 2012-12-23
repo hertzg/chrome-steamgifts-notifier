@@ -1,193 +1,138 @@
-var ListManager = function(listEl) {	
+var ListManager = function(listEl, hashFunction, gifts) {	
 	var that = this;
-	
-	this.compareFn = function(){};
-	
-	var elList = [];
-		idMap = {},
-		sortMap = {};
-	
 
-	this.addObjRange = function(arr) {
-		arr.forEach(function(obj){
-			var box = BoxTemplate.render(obj);
-			that.addBox(box);
-		});
-	};
 
-	this.addBoxRange = function(arr, soft) {
-		arr.forEach(function(box){
-			that.addBox(box, soft);
-		});
-	};
-	
-	this.addBox = function(boxEl, soft) {
-		var boxData = boxEl.data;
-		
-		if(!soft) {
-			idMap[boxData.uid] = boxEl;
-			elList.oush(]
-		}
-		
+	var elMap = Object.create(null);
+		sortedMap = new SortedMap(hashFunction);
+
+	this.append = function(boxEl) {
+		boxEl.classList.add('hidden');
+		elMap[boxEl.data.uid] = boxEl;
 		listEl.appendChild(boxEl);
-	};
-	
-	this.addBoxAt = function(idx, boxEl) {
-		var el = listEl.childNodes[idx];
-		that.addBoxBefore(el, boxEl);
+		setTimeout(function(){
+			boxEl.classList.remove('hidden');
+		}, 50+Math.round(Math.random()*100));
 	};
 
-	this.addBoxFirst = function(boxEl) {
-		that.addBoxBefore(listEl.firstChild, boxEl);
-	};
-
-	this.addBoxLast = function(boxEl) {
-		that.addBoxBefore(listEl.lastChild, boxEl);
-	};
-	
-	this.addBoxBefore = function(el, boxEl) {
-		if(!el) throw 'el not found!';
+	this.inserBefore = function(el, boxEl) {
+		boxEl.classList.add('hidden');
+		elMap[boxEl.data.uid] = boxEl;
 		listEl.insertBefore(boxEl, el);
+		setTimeout(function(){
+			boxEl.classList.remove('hidden');
+		}, 50);
 	};
-	
-	this.addBoxAfter = function(el, boxEl) {
-		that.addBoxBefore(el.nextSibling, boxEl);
-	};
-	
-	this.replaceBox = function(el, boxEl) {
-		this.addBoxBefore(el, boxEl);
-		this.removeBox(el);
-	};
-	
-	this.removeBoxAt = function(idx) {
-		var el = listEl.childNodes[idx];
-		that.removeBox(el);
-	};
-	
-	this.removeBox = function(boxEl, soft) {
-		if(soft.constructor == Function) {
-			delete idMap[boxEl.data.uid];
-			$(boxEl).animate({
-				opacity: 0
-			}, 500, function(){
-				listEl.removeChild(boxEl);
-				soft();
-			});
-		} else {
-			if(!soft) delete idMap[boxEl.data.uid];
+
+	this.remove = function(boxEl) {
+		boxEl.classList.add('hidden');
+		delete elMap[boxEl.data.uid];
+		setTimeout(function(){
 			listEl.removeChild(boxEl);
-		}
+		}, 500);
 	};
 	
-	this.getIdMap = function() {
-		return boxMap;
+	this.insertAt = function(idx, boxEl) {
+		var el = listEl.childNodes[idx];
+		that.inserBefore(el, boxEl);
+
 	};
 
-	this.getBoxList = function() {
-		var boxList = [];
-		for(uid in boxMap) {
-			if(boxMap.hasOwnProperty(uid)) {
-				boxList.push(boxMap[uid]);
-			}
-		}
-		return boxList;
+	this.insertFirst = function(boxEl) {
+		that.inserBefore(listEl.firstChild, boxEl);
 	};
 
-	//=== Other
-	this.sort = function(compareFn, showFn) {
-		var list = this.getBoxList();
-		list.sort(compareFn);
-
-		that.toggle(function(){
-			this.empty();
-			list.forEach(function(el){
-				that.addBox(el, true);
-			});
-			return true;
-		}, showFn, true);
+	this.insertLast = function(boxEl) {
+		that.inserBefore(listEl.lastChild, boxEl);
 	};
 	
-	this.runFilter = function(compareFn, showFn) {
-		that.toggle(function(){
-			var list = [], searchList = that.getBoxList();
-			for (var i = 0; i < searchList.length; i++) {
-				if(compareFn(searchList[i].data)) {
-					list.push(searchList[i]);
-				}
-			};
-			that.empty();
-			that.addBoxRange(list, true);
-			return true;
-		}, showFn, true);
+	this.insertAfter = function(el, boxEl) {
+		that.inserBefore(el.nextSibling, boxEl);
 	};
 
-	this.reset = function(afterShow) {
-		//that.empty();
-		that.hide(function(){
-			that.addBoxRange(that.getBoxList(), true);
-			that.show(afterShow);
-		});
-
-	};
-
-	this.hide = function(cb) {
-		if(listEl.classList.contains('hide')) return cb && cb();
-
-		$(listEl).stop().animate({
-			opacity: 0,
-		}, 500, function(){
-			listEl.classList.add('hide');
-			cb && cb();
+	this.appendAll = function(arr) {
+		arr.forEach(function(box){
+			that.append(box);
 		});
 	};
 
-	this.show = function(cb) {
-		if(!listEl.classList.contains('hide')) return cb && cb();
-		listEl.style.opacity = 0;
-		listEl.classList.remove('hide');
-		$(listEl).stop().animate({
-			opacity: 1,
-		}, 500, function(){
-			cb && cb();
-		});
+	this.getById = function(id) {
+		//return listEl.querySelector('#'+id);
+		return document.getElementById(id);
 	};
 
-	this.toggle = function(retoggleFn, afterRetoggle, startShown) {
-		var isHidden = listEl.classList.contains('hide');
-		function afterFirstToggle() {
-			if(retoggleFn) {
-				if(retoggleFn() === true) {
-					if(!isHidden) {
-						that.show(afterRetoggle);
-					} else {
-						that.hide(afterRetoggle);
-					}
-				}
-			}
-		}
+	this.getMap = function() {
+		return sortedMap;
+	};
 
-		if(startShown) {
-			this.show(function(){
-				that.hide(afterFirstToggle);
-			});
+	this.getElMap = function(){
+		return elMap;
+	};
+
+	this.replace = function(el, boxEl) {
+		this.inserBefore(el, boxEl);
+		this.remove(el);
+	};
+
+	this.replaceSafe = function(el, boxEl) {
+		var elPrevSibling = el.previousSibling;
+		that.remove(el);
+
+		if(!elPrevSibling) {
+			that.insertFirst(boxEl);
 		} else {
-			if(isHidden) {
-				that.show(afterFirstToggle);
-			} else {
-				that.hide(afterFirstToggle);
-			}
+			that.insertAfter(elPrevSibling, boxEl);
 		}
-
-
 	};
 
-	this.empty = function() {
-		that.clear(false);
+	this.update = function(newObj) {
+		var curEl = that.getById(newObj.uid);
+
+		curEl.setFade(newObj.isEntered);
+		curEl.getInfoDiv().setEntries(newObj.entries);
+		curEl.getInfoDiv().setComments(newObj.comments);
+		curEl.getInfoDiv().setTimeStart(newObj.timeStart, newObj.timeStartText);
+		curEl.getInfoDiv().setTimeEnd(newObj.timeEnd, newObj.timeEndText);
+	};
+	
+	this.removeAt = function(idx) {
+		var el = listEl.childNodes[idx];
+		that.remove(el);
 	};
 
-	this.clear = function(alterMap) {
-		that.getBoxList().forEach(function(el){
-			that.removeBox(el, !alterMap);
-		});
+	this.empty = function(){
+		while(listEl.childNodes.length) {
+			delete elMap[listEl.lastChild.data.uid];
+			listEl.removeChild(listEl.lastChild);
+		}
 	};
+
+	this.clear = function() {
+		sortedMap.clear();
+	};
+
+	gifts.forEach(function(gift){
+		sortedMap.put(gift.uid, gift);
+		elMap[gift.uid] = BoxTemplate.render(gift);
+	});
+
+	sortedMap.onInsert = function(newObj){
+		var newEl = BoxTemplate.render(newObj.val);
+		that.insertAt(newObj.pos, newEl);
+	};
+
+	sortedMap.onRemove = function(obj){
+		that.remove(that.getById(obj.key));
+	};
+
+	sortedMap.onReplace = function(oldObj, newObj) {
+		that.update(newObj.val);
+	};
+
+	sortedMap.onClear = function(obj) {
+		that.empty();
+	};
+
+	sortedMap.forEach(function(key, val,  pos, hash){
+		that.append(elMap[key]);
+	});
 };

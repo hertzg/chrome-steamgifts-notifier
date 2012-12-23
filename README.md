@@ -40,6 +40,22 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 - Replaced Spacer with box margin bottom (why didnt i thing about that earlier)
 - Implemented ListManager (nice animations and great features)
 - Smoothed out a lot
+- Added Port manager to support multiple connections
+- Refactored Background page
+- getGiveaways now also informs about http status and text
+- Removed interop port
+- Parses steamgifts only when at least one client is present (additional feature) 
+- Fixed winChance calculation again :/
+- Fixed hasChanged method
+- Improved Giveaway.toObject function
+- Added Giveaway generic methods
+- Added after render update functionality to BoxTemplate
+- Improved ListManager with better performace and animations (removed jquery animations)
+- Moved to hasher logic the items are inserted to their respective locations as of hasher (Not resorted after each update)
+- The Giveaways are dynamicaly updated when changes are updated (needs animation)
+- Points diff moved to css animation (needs css clases)
+- Giveaways are removed as they expire
+- 
 
 ### v 1.1.0.9 - 16.11.2012 - PUBLISHED VERSION
 - Added Winning chance icon

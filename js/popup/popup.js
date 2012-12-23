@@ -1,67 +1,70 @@
+var hashers = {
+	hashSoonest: function hashSoonest(uid, gift) {
+		var timeEnd = gift.timeEnd,
+			winChance = gift.winChance;
+
+		return ((1 - winChance)*1000)*timeEnd;
+	},
+
+	hashNewest: function hashNewest(uid, gift) {
+		return ((1 - gift.winChance)*1000)*gift.timeStart
+	},
+
+	hashCheapest: function hashCheapest(uid, gift) {
+		return ((1 - gift.winChance)*1000)*gift.points;
+	},
+
+	hashWinChance: function hashWinChance(uid, gift) {
+		return (1-gift.winChance)*1000;
+	}
+};
+
+var hashFunction = hashers.hashWinChance;
+var ListMan = null,
+	port = chrome.extension.connect();
+
 $(function(){
-	
+	//Grab the main elements
 	var overlayEl = document.createElement('div'),
 		listEl = document.getElementById('list'),
 		pointsEl = document.getElementById('userPoints'),
 		pointsDiffEl = document.getElementById('userPointsDiff'),
 		userLink = document.getElementById('userLink'),
 		statusEl = document.getElementById('status');
-		
+
+	//TODO (move this to a better place): global overlay div
+	overlayEl.classList.add('loading');
+	overlayEl.classList.add('hide');
+	overlayEl.style.height = document.body.clientHeight;
+	overlayEl.style.lineHeight = (document.body.clientHeight+20)+'px';
+	document.body.appendChild(overlayEl);
+
+	//Fire up the overlay
+	showOverlay('Initializing....');
+	
+	//Grab the filter elements
 	var filterOrderBy = document.getElementById('filterOrderBy'),
 		filterText = document.getElementById('filterText'),
 		filterDoFilterButton = document.getElementById('filterDoFilter');
 	
-	overlayEl.classList.add('loading');
-	overlayEl.innerHTML = "Loading...";
-	overlayEl.style.height = document.body.clientHeight;
-	overlayEl.style.lineHeight = document.body.clientHeight+20+'px';
-	document.body.appendChild(overlayEl);
-	
+	//Initialize list manager (Animation, Sorting and all the crap)
+	ListMan = new ListManager(listEl, hashFunction, []);
 
-	window.ListMan = new ListManager(listEl);
+	function showOverlay(innerHTML) {
+		if(overlayEl.classList.contains('hide')) {
+			overlayEl.innerHTML = innerHTML;
+			overlayEl.classList.remove('hide');
+		}
+	}
 
-	function searchInList() {
-		var search = filterText.value;
-		if(!search) return;
-	
-		filterDoFilterButton.onclick = null;
-		ListMan.runFilter(function(obj){
-			return obj.title.indexOf(search) != -1;
-		}, function(){
-			function reset() {
-				filterDoFilterButton.onclick = null;
-				ListMan.reset(function(){
-					filterDoFilterButton.onclick = searchInList;
-				});
-			}
+	function hideOverlay() {
+		if(!overlayEl.classList.contains('hide')) {
+			overlayEl.classList.add('hide');
+		}
+	}
 
-
-			filterDoFilterButton.onclick = reset;
-		});
-	};
-	filterDoFilterButton.onclick = searchInList;
-	
-	var _autoFilterTimeoutHandler = null;
-	filterText.onkeyup = function(){
-		_autoFilterTimeoutHandler = clearTimeout(_autoFilterTimeoutHandler);
-		_autoFilterTimeoutHandler = setTimeout(function(){
-			
-			
-			
-		}, 3000);
-	};
-	
-	
-	
-
-	var firstSortKeyMap = {
-		"soonest": 'timeEnd',
-		"cheapest": 'points',
-		"newest": 'timeStart'
-	};
-
+	//Function that updates header bar with user info
 	function updateUserBar(user) {
-		
 		pointsEl.innerText = user.points;
 		
 		if(user.pointsDiff) {
@@ -77,78 +80,43 @@ $(function(){
 				pointsDiffEl.innerText =  user.pointsDiff;
 			}
 			
-			$(pointsDiffEl).animate({
-				opacity: 1
-			}, 500, function(){
+			pointsDiffEl.style.opacity = 1;
+			setTimeout(function(){
+				pointsDiffEl.style.opacity = 0;
 				setTimeout(function(){
-					$(pointsDiffEl).animate({
-						opacity: 0,
-					}, 500, function(){
-						pointsDiffEl.innerText = '';
-					});
-				}, 4000);
-			});
+					pointsDiffEl.innerText = '';
+				}, 50);
+			}, 3000);
 		}
 		
 		userLink.innerText = user.username;
 		userLink.href = "http://www.steamgifts.com"+user.userHref;
 	}
-	
-	function processStatus(obj) {
-		statusEl.innerText = obj.msg;
-	}
-	
-	
-	var port = chrome.extension.connect({name: "interop"});
+
+	//Hook the port message analyzer
 	port.onMessage.addListener(function(obj){
-		if(obj.request.op == 'init') {
-			updateUserBar(obj.response.user);
+		hideOverlay();
 
-			ListMan.addObjRange(obj.response.gifts);	
-
-			$(overlayEl).animate({
-				opacity: 0
-			}, 500, function(){
-				overlayEl.classList.add('hide');
-			});
-		}
-		
-	});
-	
-	port.onDisconnect.addListener(function(){
-		overlayEl.innerHTML = 'Connection lost...';
-		overlayEl.classList.remove('hide');
-	});
-	port.postMessage({op:'init'});
-	
-	var digestPort = chrome.extension.connect({name:"digest"});
-	digestPort.onMessage.addListener(function(obj){
-
-		//If its a Status Update
-		if(obj.type == 'status') {
-			processStatus(obj);
-			return;
-		};
-		
 		if(obj.user) {
 			updateUserBar(obj.user);
 		}
-		
-		
-		if(obj.add.length) {
-			obj.add.forEach(function(gift){
-				var el = BoxTemplate.render(gift);
-				el.opacity = 0; //Hide the element after insertion
-				ListMan.addBoxFirst(el);
-				$(el).animate({ //Animate fade in effect
-					opacity: 1
-				}, 500);
+
+		var upsertArr = obj.add.concat(obj.update);
+		if(upsertArr.length) {
+			upsertArr.forEach(function(gift){
+ 				ListMan.getMap().put(gift.uid, gift);
+			});
+		}
+
+		if(obj.remove.length) {
+			obj.remove.forEach(function(gift){
+				ListMan.getMap().remove(gift.uid);
 			});
 		}
 	});
 	
-	digestPort.onDisconnect.addListener(function(){
-		overlayEl.innerHTML = 'Connection lost...';
-		overlayEl.classList.remove('hide');
+	//Smth went wrong
+	port.onDisconnect.addListener(function(port){
+		showOverlay('Connection lost...');
 	});
-});	
+});
