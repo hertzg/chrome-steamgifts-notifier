@@ -1,38 +1,64 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<base target="_blank">
 		<meta charset="utf-8">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Expires" content="-1">
-		<link rel="stylesheet" type="text/css" media="screen" href="css/popup.css" />
-		<link rel="stylesheet"  href="jqm/jquery.mobile-1.2.0.min.css" />
-
+		<link rel="stylesheet" type="text/css" href="css/popup.css" />
+		<title>Notifier</title>
 		<script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
-		<script type="text/javascript" src="jqm/jquery.mobile-1.2.0.min.js"></script>
-
 		<script type="text/javascript" src="js/configuration.js"></script>
-		<script type="text/javascript" src="js/popup.js"></script>
-		
+		<script type="text/javascript" src="js/sortedmap.js"></script>
+		<script type="text/javascript" src="js/popup/box.js"></script>
+		<script type="text/javascript" src="js/popup/listmanager.js"></script>
+		<script type="text/javascript" src="js/popup/popup.js"></script>
 	</head>
-	<body>	
-		<!-- Home -->
-		<div data-role="page" id="page1">
-			<div data-theme="a" data-role="header">
-				<h3><span id="user"></span> &bull; <a href="http://www.steamgifts.com" target="_blank">SteamGifts</a> &bull; <span id="points"></span></h3>
-				<a id="refreshData" data-role="button" href="#" data-icon="refresh" data-iconpos="notext" title="Refresh" class="ui-btn-right"></a>
-				<a id="reloadData" data-role="button" href="#" data-icon="refresh" data-iconpos="notext" title="Check now!" class="ui-btn-left"></a>
-				<div data-role="navbar">
-					<ul>
-						<li><a href="#" id="sort-timeStart" data-role="button" data-shadow="false" data-theme="a" data-inline="true">Newest</a></li>
-						<li><a href="#" id="sort-timeEnd" data-role="button" data-shadow="false" data-theme="a" data-inline="true">Soonest</a></li>
-						<li><a href="#" id="sort-points" data-role="button" data-shadow="false" data-theme="a" data-inline="true">Points</a></li>
-					</ul>
+	<body>
+		<div class="goto-top hide" id="gotoTop" title="Return to Top"></div>
+		<div class="header">
+			<div class="left">
+				<b>Points:</b> <span id="userPoints">---</span> <img src="img/points.png" /><span id="userPointsDiff"></span><br/>
+				<b>Account:</b> <a id="userLink" href="#">---</a>
+			</div>
+			<div class="center"><h2><a href="https://github.com/hertzg/chrome-steamgifts-notifier">SteamGifts Notifier v1.2</a></h2><span id="status"></span></div>
+			<div class="right">
+				<img src="img/logout.png" /> <a href="#">Logout</a><br/>
+				<img src="img/report.png" /> <a href="https://github.com/hertzg/chrome-steamgifts-notifier/issues/new">Report bug</a>
+			</div>
+		</div>
+		<div class="filter">
+			<div class="wrapper">
+				<b>Show:</b>
+				<select id='filterByStatus' style="width: 110px;">
+					<option>All</option>
+					<option>Public only</option>
+					<option>Group only</option>
+					<option>Contributor only</option>
+				</select> 
+				<input id='filterOnlyEnterable' type="checkbox"> <b>Hide Unenterable*</b>
+				<input id='filterHideEntered' type="checkbox"> <b>Hide Entered</b>	&bull;		
+				<b>Smart order:</b>
+				<select id='filterOrderBy' style="width: 70px;">
+					<option value="soonest">Ending soonest with Highest chance of wining</option>
+					<option value="newest">Newest with Highest chance of wining</option>
+					<option value="cheapest">Cheapest with Highest chance of wining</option>
+					<option value="winChance">Highest chance of wining</option>
+				</select>
+				<input id='filterSort' type="button" value="Sort"/><br/>
+
+				<div style="display:inline-block; line-height: 20px; width: 470px">
+					<input id="filterText" type="text" style="width: 100%"/>
 				</div>
+				<div style="display:inline-block;">
+					<input id='filterDoSearch' title="Performs search on the website and shows the results below" type='button' value="Search"><input id="filterDoFilter" title="Filters the results shown below" type='button' value="Filter">
+				</div>
+				<div class="clear"></div>
 			</div>
-			<div data-role="content">
-				<ul data-role="listview" data-filter="true" data-filter-placeholder="You can use special keywords like :green :medium :bad :unknown" id="list" data-inset="true">
-				</ul>
-			</div>
+		</div>
+		<div class="wrapper">
+			<div class="list" id="list"></div>
+			<div class="spacer"></div>
 		</div>
 	</body>
 </html>

@@ -4,6 +4,7 @@ function API() {
 	//== Constants
 	API.STATE_WORKING = 'working';
 	API.STATE_IDLE = 'idle';
+	API.STATE_PROCESSING = 'processing';
 	
 	API.STATUS_NEW = 'new';
 	API.STATUS_OPEN = 'open';
@@ -29,6 +30,8 @@ function API() {
 	this.isAuthorized = false;
 	this.state = API.STATE_IDLE;
 	
+	this.xhr = new XMLHttpRequest();
+	
 	//== EVENTSs
 	this.onStateChange = function(){};
 
@@ -38,8 +41,11 @@ function API() {
 	};
 	
 	this.parseUserInfo = function(html) {
-		var pointsEl = $('div#navigation ol li a:contains("Account")', html).last();
-		var profileEl = $('div#navigation ol li a[href^="/user/"]', html);
+		
+		var safeHTML = this.replaceSrcs(html);
+		
+		var pointsEl = $('div#navigation ol li a:contains("Account")', safeHTML).last();
+		var profileEl = $('div#navigation ol li a[href^="/user/"]', safeHTML);
 		
 		this.isAuthorized = pointsEl.length == 1;
 		
@@ -53,7 +59,7 @@ function API() {
 				this.pointsDiff = (newPoints - this.points);
 			}
 			
-			var el = $('.alert', html);
+			var el = $('.alert', safeHTML);
 			this.isAlert = !!el.length;
 			if(this.isAlert) {
 				var alertText = el.text().trim();
@@ -76,33 +82,58 @@ function API() {
 		
 	};
 	
+	this.replaceSrcs = function(input) {
+		//dont load sources when css traversing
+		return input.replace(/(src)="([^"]*)"/g, "data-src=\"$2\"");
+	};
+	
 	this.getGiveaways = function(status, page, callback){
-		this._get('http://www.steamgifts.com/'+status+'/page/'+page, function(html){
-			var arr = that.processGiveaways(html);
-			callback(arr);
+		this._get('http://www.steamgifts.com/'+status+'/page/'+page, function(html, code, text){
+			var safeHTML = that.replaceSrcs(html);
+		
+			var arr = that.processGiveaways(safeHTML);
+			callback(arr, code, text);
 		});
+	};
+	
+
+	
+	this.getUserInfo = function(){
+		return {
+			isAuthorized: this.isAuthorized,
+			username: this.username,
+			userHref: this.userHref,
+			points: this.points,
+			pointsDiff: this.pointsDiff
+		};
 	};
 	
 	this._get = function(url, callback) {
 		this.lastUpdate = new Date().getTime();
 		this.onStateChange(API.STATE_WORKING);
-		$.get(url, function(html){
-			that.parseUserInfo(html);
+		
+		this.xhr.open("GET", url,true);
+		this.xhr.send();
+		this.xhr.onreadystatechange = function() {
+			if (that.xhr.readyState != 4)  { return; }
+			
+			that.parseUserInfo(that.xhr.responseText);
 			that.onStateChange(API.STATE_IDLE);
-			callback(html);
-		});
+			callback(that.xhr.responseText, that.xhr.status, that.xhr.statusText);
+		};
 	};
 	
 	this.processGiveaways = function(html) {
 		var arr = [];
 		$('.post', html).each(function(idx, item){
 			if($(item).children('.left').length > 0) {
-				arr.push(that.processGiveaway(item));
+				arr.push(that.processGiveaway(item.outerHTML));
 			} else {
 				$(item).children('div').each(function(idx, devPost) {
-					arr.push(that.processGiveaway(devPost));
+					arr.push(that.processGiveaway(devPost.outerHTML));
 				})
 			}
+			//return false;
 		});
 		return arr;
 	};
