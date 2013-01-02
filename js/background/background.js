@@ -150,3 +150,11 @@ Digest.onMessage = function(obj, port) {
 
 resetInterval();
 checkGiveawaysIntervalHandler();
+
+Digest.onDisconnect = function(port){
+	if(Digest.getPorts().length == 1) { //If this was the last client
+		//console.log('last client disconnected');
+		//_checkGiveawaysIntervalHandle = window.clearInterval(_checkGiveawaysIntervalHandle);
+	}
+	//console.log('Disconnect', port.portId_);
+};

@@ -1,6 +1,6 @@
-var ListManager = function(listEl, compareFn, gifts) {	
+<<<<<<< HEAD
+var ListManager = function(listEl, compareFn, gifts) {
 	var that = this;
-
 
 	var elMap = Object.create(null);
 		sortedMap = new SortedMap(compareFn);

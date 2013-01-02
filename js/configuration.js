@@ -3,7 +3,7 @@
 		this._key = '__config__';
 		this.defaults = {
 			checkInterval: 180000, //3 min
-			signature: 'v1.1.0.10',
+			signature: 'v1.2',
 		};
 		
 	
