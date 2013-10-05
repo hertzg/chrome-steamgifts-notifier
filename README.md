@@ -1,6 +1,5 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 More interesting things are on <a href="https://github.com/hertzg/chrome-steamgifts-notifier/tree/dev">dev branch</a> ;)
-=======
 
 ## Instalation
 Simple as [click here to Install from Google Chrome Store (Free)](https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen)
