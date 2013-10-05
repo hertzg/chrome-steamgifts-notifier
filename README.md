@@ -58,7 +58,7 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 
 ------
 
-### v 1.1.0.9 - 16.11.2012 - PUBLISHED VERSION
+### v 1.1.0.9 - 16.11.2012
 - Added Winning chance icon
 - Improved Giveaway Parsing
 - Improved Closed giveaway detection
