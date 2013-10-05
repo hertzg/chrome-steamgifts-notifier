@@ -29,6 +29,7 @@ function Giveaway(obj) {
 	
 	this.points = null;
 	this.pirceUSD = null;
+	this.contribUSD = null;
 	
 	this.timeStartText = null;
 	this.timeStart = null;
@@ -52,6 +53,8 @@ function Giveaway(obj) {
 	this.submitKey = null;
 	this.enterText = null;
 	
+	this.winChance = null;
+	
 	//== Privates
 	var postHTML = null;
 	var fetchedHTML = null;
@@ -62,7 +65,7 @@ function Giveaway(obj) {
 	//== METHODS
 	this.init = function(obj){
 		var type = typeof obj;
-		if(type = "string") { 
+		if(type == "string") { 
 			//TODO: transfer to apropriate constructor
 			this.initFromPost(obj);
 		} else if(type == 'object' && obj != null && obj.constructor == Object) {
@@ -115,8 +118,13 @@ function Giveaway(obj) {
 		
 		this.isEntered = els.post.hasClass('fade');
 		this.isContributorOnly = !!els.descriptionDiv.has('.contributor_only').length;
-		this.isContributorGreen = this.isContributorOnly && !!els.descriptionDiv.has('.contributor_only.green').length;
-		this.isGroupOnly = els.descriptionDiv.has('.group_only').length;
+		this.isContributorGreen = !!els.descriptionDiv.has('.contributor_only.green').length;		
+		this.isGroupOnly = !!els.descriptionDiv.has('.group_only').length;
+		
+		
+		if(this.isContributorOnly) {
+			this.contribUSD = parseFloat(els.descriptionDiv.find('.contributor_only').text().replace(/([^0-9\.]*)/g, ''));
+		}
 
 		this.isEnterable = null; //TODO: can we enter this giveaway? (with and without fetched giveaway)
 		
@@ -152,12 +160,17 @@ function Giveaway(obj) {
 		this.isPinned = !authorAvatarStyle;
 		this.authorAvatar = authorAvatarStyle ? authorAvatarStyle.replace(/.*url\(([^\)]*)\).*/, "$1") : "img/no-image.png";
 		
-		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/g, ''));
+		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/g, '')) || 0;
 		this.comments = parseInt(els.entriesDiv.children('span').last().text().trim().replace(/([^0-9]*)/g, ''));
 		
-		this.appLogo = els.rightDiv.find('img').attr('src');
+		this.appLogo = els.rightDiv.find('img').attr('data-src');
 		if(this.appLogo.indexOf('://') == -1) {
 			this.appLogo = 'http://www.steamgifts.com'+this.appLogo;
+		}
+		
+		this.winChance = ((this.copies||1) / (this.entries + (this.isEntered ? -1 : 1)));
+		if(this.winChance > 1) {
+			this.winChance = 1;
 		}
 		
 		this.isProcessed = true;
@@ -179,6 +192,22 @@ function Giveaway(obj) {
 		//TODO: leave giveaway
 	};
 	
+	this.equals = function(gift) {
+		if(gift.uid && this.uid) {
+			return gift.uid == this.uid;
+		}
+		return false;
+	};
+	
+	this.hasChanged = function(gift) {
+		var keys = ['timeStart',  'timeEnd', 'entries', 'comments', 'isEntered'];
+		for(var i=0; i<keys.length; i++) {
+			if(this[keys[i]] != gift[keys[i]])
+				return true;
+		};
+		return false;
+	};
+	
 	this.stringToMs = function(str) {
 		var str = str.toLowerCase();
 		var x = {  //Not great but I'm out of tea :(
@@ -192,10 +221,10 @@ function Giveaway(obj) {
 		
 		var res = NaN;
 		
-		var number = parseInt(str.replace(/([^0-9]*)/, '').trim()); //NEEDS G flag imho!
-		if(!number) return res; //GTFO! No Digits found
+		var number = parseInt(str.replace(/([^0-9]*)/g, '').trim());
+		if(!number) return res;
 		
-		var text = str.replace(/([0-9]*)/, '').trim(); //Needs G Flag imho!
+		var text = str.replace(/([0-9]*)/g, '').trim();
 		
 		for(j in x) {
 			if(x.hasOwnProperty(j)) {
@@ -211,7 +240,7 @@ function Giveaway(obj) {
 	};
 	
 	this.toObject = function() {
-		var obj = {};
+		var obj = Object.create(null);
 		for(key in this) {
 			if(this.hasOwnProperty(key) && typeof this[key] != 'function') {
 				obj[key] = this[key];
@@ -232,3 +261,17 @@ Giveaway.fromObject = function(obj){
 	instance.initFromObject(obj);
 	return instance;
 };
+
+Giveaway.equals = function(obj1, obj2) {
+	if(obj1.equals) return obj1.equals(obj2);
+	if(obj2.equals) return obj2.equals(obj1);
+	var instance = Giveaway.fromObject(obj1);
+	return instance.equals(obj2);
+}
+
+Giveaway.hashChanged = function(obj1, obj2) {
+	if(obj1.hashChanged) return obj1.hashChanged(obj2);
+	if(obj2.hashChanged) return obj2.hashChanged(obj1);
+	var instance = Giveaway.fromObject(obj1);
+	return instance.hashChanged(obj2);
+}

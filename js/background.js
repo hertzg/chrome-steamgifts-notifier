@@ -1,3 +1,166 @@
+/*(function(){
+	chrome.extension.onConnect.addListener(function(port) {
+		Ports.add(port); 
+	});
+
+	chrome.extension.onMessage.addListener(function(message, sender, sendResponse){
+		sendResponse('OK?');
+	});
+
+	var Ports = new (function(){
+		var that = this;
+		var arr = [];
+		
+		this.onMessage = function(obj, port){};	
+		this.onDisconnect = function(port){};	
+		
+		this.add = function(port) {
+		
+			port.onMessage.addListener(function(obj, port){
+				that.onMessage(obj, port);
+			});
+			
+			port.onDisconnect.addListener(function(port){
+				that.onDisconnect(port);
+				that.remove(port);
+			});
+			
+			arr.push(port);
+		};
+		
+		this.remove = function(port) {		
+			for(var i=0; i<arr.length; i++) {
+				if(arr[i] == port) {
+					arr.splice(i, 1);
+					break;
+				}
+			}
+		}
+		
+		this.digest = function(obj) {
+			if(!arr.length) return false;
+		
+			arr.forEach(function(port){
+				port.postMessage(obj);
+			});
+		};
+		
+		this.getArr = function() {
+			return arr;
+		};
+	});
+
+	var hzApi = new API();
+
+	var _checkGiveawaysIntervalHandle;
+	function resetInterval() {
+		_checkGiveawaysIntervalHandle = window.clearInterval(_checkGiveawaysIntervalHandle);
+		_checkGiveawaysIntervalHandle = window.setInterval(checkGiveawaysIntervalHandler, 5000);
+	}
+	
+	var lastCrawledGifts = [];
+	function checkGiveawaysIntervalHandler(cb) {
+	
+		stopAnimateBadgeText();
+		startAnimateBadgeText();
+		chrome.browserAction.setTitle({title:'Checking for new results'});
+		
+		hzApi.getGiveaways(API.STATUS_OPEN, 1, function(arr){
+			var gifts = [],
+				giftsNew = [];
+			
+			arr.forEach(function(gift){
+				var obj = gift.toObject();
+				gifts.push(obj);
+				
+				if(lastCrawledGifts.length) {
+				
+					var found = false;
+					for(var i=0; i<lastCrawledGifts.length; i++) {
+						var lgift = lastCrawledGifts[i];
+						if(lgift.equals(gift)) {
+							found = true;
+							break;
+						}
+					};
+					
+					if(!found) giftsNew.push(gift);
+				} else {
+					giftsNew.push(gift);
+				}
+			});
+			lastCrawledGifts = arr;
+			var result = {
+				type: 'digest',
+				user: hzApi.getUserInfo(),
+				giftsNew: giftsNew,
+				gifts: gifts,
+				date: new Date()
+			};
+			
+			var res = true;
+			if(cb) {
+				res = cb(result);
+			}
+			
+			if(res === false) return;
+			
+			Ports.digest(result);
+			
+			stopAnimateBadgeText();
+			
+			hzApi.isAlert = true;
+			
+			chrome.browserAction.setBadgeText({text:(hzApi.isAlert ? '! ': '')+giftsNew.length+(hzApi.isAlert ? ' !': '')});
+			chrome.browserAction.setTitle({title:'Found '+giftsNew.length+' new Deals\nLast Update @ '+ result.date.toLocaleTimeString()});
+
+			var clearBadgeHandler = null;
+			if(!giftsNew.length) {
+
+				if(api.isNewAlert) {
+					notifyAlert();
+					return;
+				}
+				
+				if(api.isAlert) {
+					chrome.browserAction.setBadgeText({text:'!!!'});
+					return;
+				}
+			
+				clearBadgeHandler = clearTimeout(clearBadgeHandler);
+				clearBadgeHandler = setTimeout(function(){
+					clearBadge();
+				}, 3000);
+			}
+		});
+	}
+	
+	Ports.onMessage = function(obj, port){
+		
+		if(obj == 'checkNow') {
+			checkGiveawaysIntervalHandler(function(result){
+				port.postMessage(result);
+				return false;
+			});
+			
+		} else if(obj == 'reload') {
+		
+			checkGiveawaysIntervalHandler(function(result){
+				port.postMessage(result);
+			});
+			
+		} else {
+			port.postMessage('NotYetImplemented!');
+		}
+		
+	};
+	
+	//resetInterval();
+});*/
+
+
+//====================================== OLD WAY ======================================
+
 var _animationHandle;
 function startAnimateBadgeText() {
 
@@ -24,7 +187,6 @@ var api = new API();
 
 function checkGiveaways(cb) {
 	
-	Config.set('ticks', Config.get('ticks')+1);
 	Config.set('lastUpdate', new Date().getTime());
 
 	stopAnimateBadgeText();
@@ -44,6 +206,8 @@ function checkGiveaways(cb) {
 				if(i == Config.get('posts').length) {
 					newItemCount++;
 				}
+				
+				gift = gift.toObject();
 			});
 		} else {
 			newItemCount = giveaways.length;
@@ -57,7 +221,7 @@ function checkGiveaways(cb) {
 		chrome.browserAction.setBadgeText({text:(api.isAlert ? '! ': '')+newItemCount+(api.isAlert ? ' !': '')});
 		chrome.browserAction.setTitle({title:'Found '+newItemCount+' new Deals\nLast Update @ '+ lastUpdateDate.toLocaleTimeString()});
 		
-		var clearBadgeHandler;
+		var clearBadgeHandler = null;
 		if(newItemCount == 0) {
 
 			if(api.isNewAlert) {
@@ -75,8 +239,6 @@ function checkGiveaways(cb) {
 				clearBadge();
 			}, 3000);
 		}
-		
-		Config.save();
 		
 		if(cb) cb();
 	});

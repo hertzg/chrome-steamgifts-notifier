@@ -1,6 +1,7 @@
 This is an extension for Google Chrome browser for SteamGifts.com website.
 More interesting things are on <a href="https://github.com/hertzg/chrome-steamgifts-notifier/tree/dev">dev branch</a> ;)
-  
+=======
+
 ## Instalation
 Simple as [click here to Install from Google Chrome Store (Free)](https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen)
 <p align="center">
@@ -12,8 +13,53 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
   <a href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img title="SteamGifts Notifier v1.1.0.9" alt="SteamGifts Notifier v1.1.0.9" src="https://lh3.googleusercontent.com/NcOjcSMFM0zuCOU7KAPxSHoKwPqc4pemhJ-0KcWjfwAdPVrHmga7EHoA46EzlvvDrIoX1KaNMQ=s640-h400-e365-rw" /></a>
 </p>
 
+
 ## Changelog
-#### v 1.1.0.9 - 16.11.2012
+
+### v 1.2
+- Moving from jQuery to native JS
+- Moved from $.get to  native XHR request (oh jQuery, appears that u suck too)
+- Temporal fix for images loading when initializing jquery object on html (seems so)
+- Moving to long lived connections for extension interop
+- Some more partial imporvements
+- Improved Winning odds calculation (Now counts copies)
+- Configuration resets with version change
+- Added contributor ammount parsing
+- Fixed search clear button glitch
+- Fixed pinneed and new icon glitches
+- Implemented Number shortener (eg: 1000 -> 1k)
+- Redisigned a bit to cleanup some space for new changes ;)
+- Moving to chrome extension messaging for "IPC" (50% Done)
+- Giveaway can now be compared using equals method
+- Implemented status broadcasting
+- Implemented gift rendering via new IPC
+- Implemented loading overlay
+- Fixed userHref being undefined
+- Added Spacer rendering feature to BoxTemplate
+- Made page update dynamically (need to figure out sorting)
+- Implmented Icon badge animation
+- Replaced Spacer with box margin bottom (why didnt i thing about that earlier)
+- Implemented ListManager (nice animations and great features)
+- Smoothed out a lot
+- Added Port manager to support multiple connections
+- Refactored Background page
+- getGiveaways now also informs about http status and text
+- Removed interop port
+- Parses steamgifts only when at least one client is present (additional feature) 
+- Fixed winChance calculation again :/
+- Fixed hasChanged method
+- Improved Giveaway.toObject function
+- Added Giveaway generic methods
+- Added after render update functionality to BoxTemplate
+- Improved ListManager with better performace and animations (removed jquery animations)
+- Moved to hasher logic the items are inserted to their respective locations as of hasher (Not resorted after each update)
+- The Giveaways are dynamicaly updated when changes are updated (needs animation)
+- Points diff moved to css animation (needs css clases)
+- Giveaways are removed as they expire
+
+------
+
+### v 1.1.0.9 - 16.11.2012 - PUBLISHED VERSION
 - Added Winning chance icon
 - Improved Giveaway Parsing
 - Improved Closed giveaway detection
@@ -91,40 +137,40 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 
 ------
 
-# v1.0.10
+### v1.0.10
 - remove zo's script
 
-# v1.0.9
+### v1.0.9
 - fix zo's script loading url
 - fix data extraction for new design
 - add autoupdate
 
-# v1.0.7
+### v1.0.7
 - fix pages where enhancement script is injected
 
-# v1.0.6
+### v1.0.6
 - load Zo script directly from google code (no need for updates anymore :D)
 
-# v1.0.5
+### v1.0.5
 - integrate Zo enhancement script  
 - fix link to main page  
 
-# v1.0.4
+### v1.0.4
 - new design (powered by jquery mobile)
 - added highlighting of new items
 - added home button to open steamgifts.com
 - added removal of expired giveaways
 - increased refresh time to 10 mins
 
-# v1.0.3
+### v1.0.3
 - fix autorefresh bug (finnaly got it!)
 - add last refresh time to tooltip
 
-# v1.0.2
+### v1.0.2
 - added refresh button
 - fix autorefresh bug
 - fix sorting
 
-# v1.0.1
+### v1.0.1
 - creation and end time is now stored as js Date type
 - added UI sorting options

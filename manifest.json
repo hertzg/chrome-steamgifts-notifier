@@ -15,6 +15,7 @@
 	},
 	"description": "Steamgifts.com new giveaways notifier!",
 	"name": "Steamgifts Notifier",   
+	"options_page": "options.html",   
 	"permissions": [
 		"http://www.steamgifts.com/*",
 		"background",
