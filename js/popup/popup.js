@@ -1,5 +1,5 @@
 var hashers = {
-	hashSoonest: function hashSoonest(a, b) {
+	soonest: function hashSoonest(a, b) {
 		if(a.timeEnd == b.timeEnd) {
 			if(a.winChance == b.winChance) {
 				return 0;
@@ -9,7 +9,7 @@ var hashers = {
 		return a.timeEnd > b.timeEnd ? 1 : -1;
 	},
 
-	hashNewest: function hashNewest(a, b) {
+	newest: function hashNewest(a, b) {
 		if(a.timeStart == b.timeStart) {
 			if(a.winChance == b.winChance) {
 				return 0;
@@ -19,7 +19,7 @@ var hashers = {
 		return a.timeStart > b.timeStart ? 1 : -1;
 	},
 
-	hashCheapest: function hashCheapest(a, b) {
+	cheapest: function hashCheapest(a, b) {
 		if(a.points == b.points) {
 			if(a.winChance == b.winChance) {
 				return 0;
@@ -29,7 +29,8 @@ var hashers = {
 		return a.points > b.points ? 1 : -1;
 	},
 
-	hashWinChance: function hashWinChance(a, b) {
+	winChance: function hashWinChance(a, b) {
+		//console.log(a.winChance, (a.winChance == b.winChance ? '=' : (a.winChance > b.winChance ? ">" : "<")), b.winChance, a.uid, b.uid)
 		if(a.winChance == b.winChance) {
 			return 0;
 		}
@@ -37,7 +38,7 @@ var hashers = {
 	}
 };
 
-var hashFunction = hashers.hashSoonest;
+var hashFunction = hashers.soonest;
 var ListMan = null,
 	port = chrome.extension.connect();
 
@@ -76,11 +77,21 @@ $(function(){
 	
 	//Grab the filter elements
 	var filterOrderBy = document.getElementById('filterOrderBy'),
+		filterDoStort  = document.getElementById('filterSort'),
 		filterText = document.getElementById('filterText'),
 		filterDoFilterButton = document.getElementById('filterDoFilter');
 	
 	//Initialize list manager (Animation, Sorting and all the crap)
 	ListMan = new ListManager(listEl, hashFunction, []);
+	
+	filterDoStort.onclick = function() {
+		var newHashFunction = hashers[filterOrderBy.value]
+		
+		if(hashFunction !== newHashFunction) {
+			hashFunction = newHashFunction;
+			ListMan.getMap().reSort(newHashFunction) //TODO: Fix node refference error
+		}
+	}
 
 	function showOverlay(innerHTML) {
 		if(overlayEl.classList.contains('hide')) {

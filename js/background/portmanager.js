@@ -19,9 +19,7 @@ var PortManager = function(noAutoAttach){
 	}
 
 	this.add = function(port) {
-		port.onMessage.addListener(function(message, port){
-			that.onReceive(message, port);
-		});
+		port.onMessage.addListener(that.onReceive);
 
 		port.onDisconnect.addListener(function(port){
 			if(that.onDisconnect(port) !== false) {

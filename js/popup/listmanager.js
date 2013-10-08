@@ -13,7 +13,7 @@ var ListManager = function(listEl, compareFn, gifts) {
 		}, 50+Math.round(Math.random()*100));
 	};
 
-	this.inserBefore = function(el, boxEl) {
+	this.insertBefore = function(el, boxEl) {
 		boxEl.classList.add('hidden');
 		elMap[boxEl.data.uid] = boxEl;
 		listEl.insertBefore(boxEl, el);
@@ -22,30 +22,32 @@ var ListManager = function(listEl, compareFn, gifts) {
 		}, 50);
 	};
 
-	this.remove = function(boxEl) {
+	this.remove = function(boxEl, cb) {
 		boxEl.classList.add('hidden');
 		setTimeout(function(){
-			listEl.removeChild(boxEl);
-			delete elMap[boxEl.data.uid];
+			if(cb && cb() !== false) {
+				listEl.removeChild(boxEl);
+				delete elMap[boxEl.data.uid];
+			}
 		}, 600);
 	};
 	
 	this.insertAt = function(idx, boxEl) {
 		var el = listEl.childNodes[idx];
-		that.inserBefore(el, boxEl);
+		that.insertBefore(el, boxEl);
 
 	};
 
 	this.insertFirst = function(boxEl) {
-		that.inserBefore(listEl.firstChild, boxEl);
+		that.insertBefore(listEl.firstChild, boxEl);
 	};
 
 	this.insertLast = function(boxEl) {
-		that.inserBefore(listEl.lastChild, boxEl);
+		that.insertBefore(listEl.lastChild, boxEl);
 	};
 	
 	this.insertAfter = function(el, boxEl) {
-		that.inserBefore(el.nextSibling, boxEl);
+		that.insertBefore(el.nextSibling, boxEl);
 	};
 
 	this.appendAll = function(arr) {
@@ -68,7 +70,7 @@ var ListManager = function(listEl, compareFn, gifts) {
 	};
 
 	this.replace = function(el, boxEl) {
-		this.inserBefore(el, boxEl);
+		this.insertBefore(el, boxEl);
 		this.remove(el);
 	};
 
@@ -92,6 +94,43 @@ var ListManager = function(listEl, compareFn, gifts) {
 		curEl.getInfoDiv().setTimeStart(newObj.timeStart, newObj.timeStartText);
 		curEl.getInfoDiv().setTimeEnd(newObj.timeEnd, newObj.timeEndText);
 	};
+	
+	this.replace = function(oldObj, newObj) {
+		var oldEl = that.getById(oldObj.uid),
+			newEl;
+		
+		if(oldEl) {
+			newEl = that.getById(newObj.uid);
+			if(!newEl) {
+				newEl = BoxTemplate.render(newObj);
+				that.insertBefore(oldEl, newEl);
+				that.remove(oldEl);
+			} else {
+				var oldElNextSibling = oldEl.nextSibling,
+					newElNextSibling
+				
+				if(oldElNextSibling == newEl) {
+					oldElNextSibling = newEl.nextSibling
+					that.remove(oldEl, function(){
+						oldElNextSibling = oldElNextSibling || listEl.lastChild
+						that.insertBefore(oldElNextSibling, newEl);
+					});
+				} else {
+					that.remove(oldEl, function(){
+						oldElNextSibling = oldElNextSibling || listEl.lastChild
+						newElNextSibling = newEl.nextSibling
+						that.remove(newEl, function() {
+							newElNextSibling = newElNextSibling || listEl.lastChild
+							that.insertBefore(oldElNextSibling, newEl);
+							that.insertBefore(newElNextSibling, oldEl);
+							return false;
+						})
+						return false
+					})
+				}
+			}
+		}
+	}
 	
 	this.removeAt = function(idx) {
 		var el = listEl.childNodes[idx];
@@ -117,16 +156,16 @@ var ListManager = function(listEl, compareFn, gifts) {
 
 	sortedMap.onInsert = function(newObj){
 		var newEl = BoxTemplate.render(newObj.val);
+		console.log("+", newObj.pos, newObj.val.winChance, newObj, newEl);
 		that.insertAt(newObj.pos, newEl);
 	};
 
 	sortedMap.onRemove = function(obj){
-		console.log('-', obj.key, that.getById(obj.key));
 		that.remove(that.getById(obj.key));
 	};
 
 	sortedMap.onReplace = function(oldObj, newObj) {
-		that.update(newObj.val);
+		that.replace(oldObj.val, newObj.val);
 	};
 
 	sortedMap.onClear = function(obj) {

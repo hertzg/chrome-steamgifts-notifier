@@ -40,7 +40,7 @@ function checkGiveawaysIntervalHandler(cb) {
 		var giftsAdd = [],
 			giftsUpdate = [],
 			giftsRemove = [];
-		
+			
 		arr.forEach(function(gift){
 			var obj = gift.toObject();
 			
