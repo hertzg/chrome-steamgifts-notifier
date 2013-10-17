@@ -9,7 +9,7 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 
 ## Screenshot
 <p align="center">
-  <a href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img title="SteamGifts Notifier v1.2" alt="SteamGifts Notifier v1.2" src="https://lh4.googleusercontent.com/gkpnv7pY-r1nd8RZUjrTRXWDeZa-eNgJsmXJ4_BFjLMmy-wxDUCWUk7xJd9HRYxkNieb0Xs7=s640-h400-e365-rw" /></a>
+  <a href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img title="SteamGifts Notifier v1.1.0.9" alt="SteamGifts Notifier v1.1.0.9" src="https://lh3.googleusercontent.com/NcOjcSMFM0zuCOU7KAPxSHoKwPqc4pemhJ-0KcWjfwAdPVrHmga7EHoA46EzlvvDrIoX1KaNMQ=s640-h400-e365-rw" /></a>
 </p>
 
 
