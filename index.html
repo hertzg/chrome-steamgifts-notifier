@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Chrome-steamgifts-notifier : Steamgifts.com new giveaways notifier for Chrome" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Chrome-steamgifts-notifier</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/hertzg/chrome-steamgifts-notifier">View on GitHub</a>
+
+          <h1 id="project_title">Chrome-steamgifts-notifier</h1>
+          <h2 id="project_tagline">Steamgifts.com new giveaways notifier for Chrome</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/hertzg/chrome-steamgifts-notifier/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/hertzg/chrome-steamgifts-notifier/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This is an extension for Google Chrome browser for SteamGifts.com website.
+More interesting things are on <a href="https://github.com/hertzg/chrome-steamgifts-notifier/tree/dev">dev branch</a> ;)</p>
+
+<h2>
+<a name="instalation" class="anchor" href="#instalation"><span class="octicon octicon-link"></span></a>Instalation</h2>
+
+<p>Simple as <a href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen">click here to Install from Google Chrome Store (Free)</a></p>
+
+<p align="center">
+  <a title="Install from Google Store" alt="Install from Google Store" href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img src="http://cdn.appstorm.net/web.appstorm.net/files/2010/12/Chrome-Store.png"></a>
+</p>
+
+<h2>
+<a name="screenshot" class="anchor" href="#screenshot"><span class="octicon octicon-link"></span></a>Screenshot</h2>
+
+<p align="center">
+  <a href="https://chrome.google.com/webstore/detail/steamgifts-notifier/ddgkcikkmofaghjdchkffadpmeijmcen"><img title="SteamGifts Notifier v1.2" alt="SteamGifts Notifier v1.2" src="https://lh4.googleusercontent.com/gkpnv7pY-r1nd8RZUjrTRXWDeZa-eNgJsmXJ4_BFjLMmy-wxDUCWUk7xJd9HRYxkNieb0Xs7=s640-h400-e365-rw"></a>
+</p>
+
+<h2>
+<a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h2>
+
+<h3>
+<a name="v-12" class="anchor" href="#v-12"><span class="octicon octicon-link"></span></a>v 1.2</h3>
+
+<ul>
+<li>Moving from jQuery to native JS</li>
+<li>Moved from $.get to  native XHR request (oh jQuery, appears that u suck too)</li>
+<li>Temporal fix for images loading when initializing jquery object on html (seems so)</li>
+<li>Moving to long lived connections for extension interop</li>
+<li>Some more partial imporvements</li>
+<li>Improved Winning odds calculation (Now counts copies)</li>
+<li>Configuration resets with version change</li>
+<li>Added contributor ammount parsing</li>
+<li>Fixed search clear button glitch</li>
+<li>Fixed pinneed and new icon glitches</li>
+<li>Implemented Number shortener (eg: 1000 -&gt; 1k)</li>
+<li>Redisigned a bit to cleanup some space for new changes ;)</li>
+<li>Moving to chrome extension messaging for "IPC" (50% Done)</li>
+<li>Giveaway can now be compared using equals method</li>
+<li>Implemented status broadcasting</li>
+<li>Implemented gift rendering via new IPC</li>
+<li>Implemented loading overlay</li>
+<li>Fixed userHref being undefined</li>
+<li>Added Spacer rendering feature to BoxTemplate</li>
+<li>Made page update dynamically (need to figure out sorting)</li>
+<li>Implmented Icon badge animation</li>
+<li>Replaced Spacer with box margin bottom (why didnt i thing about that earlier)</li>
+<li>Implemented ListManager (nice animations and great features)</li>
+<li>Smoothed out a lot</li>
+<li>Added Port manager to support multiple connections</li>
+<li>Refactored Background page</li>
+<li>getGiveaways now also informs about http status and text</li>
+<li>Removed interop port</li>
+<li>Parses steamgifts only when at least one client is present (additional feature) </li>
+<li>Fixed winChance calculation again :/</li>
+<li>Fixed hasChanged method</li>
+<li>Improved Giveaway.toObject function</li>
+<li>Added Giveaway generic methods</li>
+<li>Added after render update functionality to BoxTemplate</li>
+<li>Improved ListManager with better performace and animations (removed jquery animations)</li>
+<li>Moved to hasher logic the items are inserted to their respective locations as of hasher (Not resorted after each update)</li>
+<li>The Giveaways are dynamicaly updated when changes are updated (needs animation)</li>
+<li>Points diff moved to css animation (needs css clases)</li>
+<li>Giveaways are removed as they expire</li>
+</ul><hr><h3>
+<a name="v-1109---16112012" class="anchor" href="#v-1109---16112012"><span class="octicon octicon-link"></span></a>v 1.1.0.9 - 16.11.2012</h3>
+
+<ul>
+<li>Added Winning chance icon</li>
+<li>Improved Giveaway Parsing</li>
+<li>Improved Closed giveaway detection</li>
+<li>Improved Copies parsing</li>
+<li>Improved Author avatar parsing</li>
+<li>Fixed coloring issue</li>
+</ul><h3>
+<a name="v-1108---16112012" class="anchor" href="#v-1108---16112012"><span class="octicon octicon-link"></span></a>v 1.1.0.8 - 16.11.2012</h3>
+
+<ul>
+<li>Added Sorting feature (Yay!)</li>
+<li>New Design (Important party :( )</li>
+<li>Removed Scrollbar to free up some more space</li>
+<li>Implemented/Fixed Pinned giveaway parsing</li>
+<li>Fixed Configuration Manger issues with defaults</li>
+<li>Fixed new giveaway detection</li>
+<li>Fixed copies parsing</li>
+<li>Improved entries and comments parsing</li>
+<li>Tons of improvements...</li>
+</ul><h3>
+<a name="v-1107---15112012" class="anchor" href="#v-1107---15112012"><span class="octicon octicon-link"></span></a>v 1.1.0.7 - 15.11.2012</h3>
+
+<ul>
+<li>Fixed <a href="https://github.com/hertzg/chrome-steamgifts-notifier/issues/9">#9</a>
+</li>
+<li>Fixed <a href="https://github.com/hertzg/chrome-steamgifts-notifier/issues/10">#10</a>
+</li>
+<li>Implemented <a href="https://github.com/hertzg/chrome-steamgifts-notifier/issues/7">#7</a>
+</li>
+<li>Fixed <a href="https://github.com/hertzg/chrome-steamgifts-notifier/issues/12">#12</a>
+</li>
+</ul><h3>
+<a name="v-1106b---14112012" class="anchor" href="#v-1106b---14112012"><span class="octicon octicon-link"></span></a>v 1.1.0.6b - 14.11.2012</h3>
+
+<ul>
+<li>Added copies parsing #4</li>
+<li>Added configuration manager class #7</li>
+<li>Fixed points being null when not logged into steamgifts #5</li>
+</ul><h3>
+<a name="v1105b---13112012" class="anchor" href="#v1105b---13112012"><span class="octicon octicon-link"></span></a>v1.1.0.5b - 13.11.2012</h3>
+
+<ul>
+<li>Fixed Issue #2</li>
+</ul><h3>
+<a name="v1104b---12112012" class="anchor" href="#v1104b---12112012"><span class="octicon octicon-link"></span></a>v1.1.0.4b - 12.11.2012</h3>
+
+<ul>
+<li>Fixed entries &amp; comments parsing</li>
+<li>Added loading indicator</li>
+<li>Fixed issue with page not being updated on manual reload</li>
+<li>Reduced check interval to 2 minutes</li>
+<li>Imlemented onStateChange event to API</li>
+<li>Deals shown are sorted by highest winning chance and lowest time remaining</li>
+<li>Cleaned up code a bit more</li>
+<li>Added author Avatar and name</li>
+<li>Added search (filter) functionality</li>
+<li>Fixed Steamgifts link opening in _self</li>
+<li><em>Added Alert notification!</em></li>
+<li>Added point difference indicator (when changed)</li>
+</ul><h3>
+<a name="v1103b---12112012" class="anchor" href="#v1103b---12112012"><span class="octicon octicon-link"></span></a>v1.1.0.3b - 12.11.2012</h3>
+
+<ul>
+<li>Minor bugfixes</li>
+</ul><h3>
+<a name="v1102b---12112012" class="anchor" href="#v1102b---12112012"><span class="octicon octicon-link"></span></a>v1.1.0.2b - 12.11.2012</h3>
+
+<ul>
+<li>Moved to more clean way of crawling and displaying giveaways</li>
+<li>Improved simple chance calculation</li>
+<li>Crawler Logic Rewritten </li>
+<li>Added API objct</li>
+<li>Added Giveaway Object</li>
+<li>Improved parsing mechanism (beta)</li>
+<li>Fixed scrolling issue</li>
+<li>New Design</li>
+<li>Added trail date parsing function</li>
+<li>Refactoring (70% Done)</li>
+</ul><h3>
+<a name="v1101a---12112012" class="anchor" href="#v1101a---12112012"><span class="octicon octicon-link"></span></a>v1.1.0.1a - 12.11.2012</h3>
+
+<ul>
+<li>Updated jQuery Mobile to latest final release v1.2.0</li>
+<li>Updated jQuery Library to latest version</li>
+<li>SteamGifts api (Non official parsing html)</li>
+<li>Migrating to "OO style"</li>
+<li>REFACTORING.... (Hell yeah!)</li>
+</ul><h3>
+<a name="v110---11112012" class="anchor" href="#v110---11112012"><span class="octicon octicon-link"></span></a>v1.1.0 - 11.11.2012</h3>
+
+<ul>
+<li>Forked from Original sorce</li>
+<li>Made working with new security policy</li>
+<li>Migrated to manifest version 2</li>
+<li>Added very simple chance calculation</li>
+<li>Fixed the Points overflow bug</li>
+</ul><hr><h3>
+<a name="v1010" class="anchor" href="#v1010"><span class="octicon octicon-link"></span></a>v1.0.10</h3>
+
+<ul>
+<li>remove zo's script</li>
+</ul><h3>
+<a name="v109" class="anchor" href="#v109"><span class="octicon octicon-link"></span></a>v1.0.9</h3>
+
+<ul>
+<li>fix zo's script loading url</li>
+<li>fix data extraction for new design</li>
+<li>add autoupdate</li>
+</ul><h3>
+<a name="v107" class="anchor" href="#v107"><span class="octicon octicon-link"></span></a>v1.0.7</h3>
+
+<ul>
+<li>fix pages where enhancement script is injected</li>
+</ul><h3>
+<a name="v106" class="anchor" href="#v106"><span class="octicon octicon-link"></span></a>v1.0.6</h3>
+
+<ul>
+<li>load Zo script directly from google code (no need for updates anymore :D)</li>
+</ul><h3>
+<a name="v105" class="anchor" href="#v105"><span class="octicon octicon-link"></span></a>v1.0.5</h3>
+
+<ul>
+<li>integrate Zo enhancement script<br>
+</li>
+<li>fix link to main page<br>
+</li>
+</ul><h3>
+<a name="v104" class="anchor" href="#v104"><span class="octicon octicon-link"></span></a>v1.0.4</h3>
+
+<ul>
+<li>new design (powered by jquery mobile)</li>
+<li>added highlighting of new items</li>
+<li>added home button to open steamgifts.com</li>
+<li>added removal of expired giveaways</li>
+<li>increased refresh time to 10 mins</li>
+</ul><h3>
+<a name="v103" class="anchor" href="#v103"><span class="octicon octicon-link"></span></a>v1.0.3</h3>
+
+<ul>
+<li>fix autorefresh bug (finnaly got it!)</li>
+<li>add last refresh time to tooltip</li>
+</ul><h3>
+<a name="v102" class="anchor" href="#v102"><span class="octicon octicon-link"></span></a>v1.0.2</h3>
+
+<ul>
+<li>added refresh button</li>
+<li>fix autorefresh bug</li>
+<li>fix sorting</li>
+</ul><h3>
+<a name="v101" class="anchor" href="#v101"><span class="octicon octicon-link"></span></a>v1.0.1</h3>
+
+<ul>
+<li>creation and end time is now stored as js Date type</li>
+<li>added UI sorting options</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Chrome-steamgifts-notifier maintained by <a href="https://github.com/hertzg">hertzg</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-44957513-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
