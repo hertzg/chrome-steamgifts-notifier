@@ -1,5 +1,5 @@
 var hashers = {
-	soonest: function hashSoonest(a, b) {
+	hashSoonest: function hashSoonest(a, b) {
 		if(a.timeEnd == b.timeEnd) {
 			if(a.winChance == b.winChance) {
 				return 0;
@@ -9,7 +9,7 @@ var hashers = {
 		return a.timeEnd > b.timeEnd ? 1 : -1;
 	},
 
-	newest: function hashNewest(a, b) {
+	hashNewest: function hashNewest(a, b) {
 		if(a.timeStart == b.timeStart) {
 			if(a.winChance == b.winChance) {
 				return 0;
@@ -19,7 +19,7 @@ var hashers = {
 		return a.timeStart > b.timeStart ? 1 : -1;
 	},
 
-	cheapest: function hashCheapest(a, b) {
+	hashCheapest: function hashCheapest(a, b) {
 		if(a.points == b.points) {
 			if(a.winChance == b.winChance) {
 				return 0;
@@ -29,8 +29,7 @@ var hashers = {
 		return a.points > b.points ? 1 : -1;
 	},
 
-	winChance: function hashWinChance(a, b) {
-		//console.log(a.winChance, (a.winChance == b.winChance ? '=' : (a.winChance > b.winChance ? ">" : "<")), b.winChance, a.uid, b.uid)
+	hashWinChance: function hashWinChance(a, b) {
 		if(a.winChance == b.winChance) {
 			return 0;
 		}
@@ -77,20 +76,18 @@ $(function(){
 	
 	//Grab the filter elements
 	var filterOrderBy = document.getElementById('filterOrderBy'),
-		filterDoStort  = document.getElementById('filterSort'),
 		filterText = document.getElementById('filterText'),
 		filterDoFilterButton = document.getElementById('filterDoFilter');
 	
 	//Initialize list manager (Animation, Sorting and all the crap)
-	ListMan = new ListManager(listEl, hashFunction, []);
-	
-	filterDoStort.onclick = function() {
-		var newHashFunction = hashers[filterOrderBy.value]
-		
-		if(hashFunction !== newHashFunction) {
-			hashFunction = newHashFunction;
-			ListMan.getMap().reSort(newHashFunction) //TODO: Fix node refference error
-		}
+	ListMan = new ListManager(listEl, hashFunction, [], onEnterGiveaway);
+
+	function onEnterGiveaway(obj, event) {
+		showOverlay('Entering Giveaway....');
+		port.postMessage({
+			type: 'enterGiveaway',
+			uid: obj.uid
+		})
 	}
 
 	function showOverlay(innerHTML) {

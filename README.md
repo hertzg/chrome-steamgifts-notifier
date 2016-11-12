@@ -15,7 +15,8 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 
 ## Changelog
 
-### v 1.2
+### v 1.2 - 13.11.2016
+- Some hacking to make it work minimally
 - Moving from jQuery to native JS
 - Moved from $.get to  native XHR request (oh jQuery, appears that u suck too)
 - Temporal fix for images loading when initializing jquery object on html (seems so)
@@ -173,5 +174,3 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 ### v1.0.1
 - creation and end time is now stored as js Date type
 - added UI sorting options
-
-<img src="https://nojsstats.appspot.com/UA-44957513-1/github.com" />

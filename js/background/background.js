@@ -138,11 +138,18 @@ Digest.onConnect = function(port) {
 	});
 };
 
-Digest.onMessage = function(obj, port) {
+Digest.onReceive = function(obj, port) {
 	if(obj.type == 'refresh') {
 		checkGiveawaysIntervalHandler(function(obj){
 			obj.type = 'refresh';
 		});
+	} else if(obj.type == 'enterGiveaway') {
+		console.log('enterGiveaway', obj);
+		hzApi.enterGiveaway(obj.uid, function(responseText, code, statusText){
+			checkGiveawaysIntervalHandler(function(obj){
+				obj.type = 'enterGiveaway'
+			});
+		})
 	} else {
 		port.postMessage('NotYetImplemented!');
 	}

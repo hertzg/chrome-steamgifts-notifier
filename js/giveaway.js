@@ -85,41 +85,20 @@ function Giveaway(obj) {
 	
 	this.initFromPost = function(post) {
 		
-		/* == DOMTree = */
-		/*				*/
-		/*+	.post		*/	els.post = $(post);		
-		/*|				*/
-		/*|-+ .left		*/		els.leftDiv = $('.left', els.post);
-		/*| |			*/
-		/*| |-+	.title	*/			els.titleDiv = $('.title', els.leftDiv);
-		/*| | |			*/
-		/*| | |- a		*/				els.titleAnchor = 	$('a', els.titleDiv);
-		/*| | 			*/
-		/*| |-+	.descr	*/			els.descriptionDiv = $('.description', els.leftDiv);
-		/*| | |			*/
-		/*| | |- .time	*/				els.timeRemainingDiv = $('.time_remaining', els.descriptionDiv);
-		/*| | |- .crea	*/				els.createdByAnchor = $('.created_by a', els.descriptionDiv)
-		/*|	|			*/
-		/*| |-+ .entri  */			els.entriesDiv = $('.entries', els.leftDiv);
-		/*|   |			*/
-		/*|   |- span 1	*/				//entries
-		/*|   |- span 2	*/				//comments
-		/*|				*/
-		/*|-+ .center	*/		els.centerDiv = $('.center', els.post);
-		/*|				*/
-		/*|-+ .right	*/		els.rightDiv = $('.right', els.post);
+		els.post = $(post);		
+		els.titleAnchor = 	els.post.find('a.giveaway__heading__name');
 		
 		this.title = els.titleAnchor.text();
 		this.href = els.titleAnchor.attr("href");
-		this.uid = this.href.toLowerCase().replace(/^\/giveaway\/([^\/]*)\/.*$/, "$1");
+		this.uid = this.href.replace(/^\/giveaway\/([^\/]*)\/.*$/i, "$1");
 		
-		var hasNewSpan = !!els.titleDiv.has('span.new').length;
-		this.isNew = hasNewSpan && els.titleDiv.find('span.new').text().toLowerCase().indexOf('new') != -1;
+		//var hasNewSpan = !!els.titleDiv.has('span.new').length;
+		this.isNew = false
 		
-		this.isEntered = els.post.hasClass('fade');
-		this.isContributorOnly = !!els.descriptionDiv.has('.contributor_only').length;
-		this.isContributorGreen = !!els.descriptionDiv.has('.contributor_only.green').length;		
-		this.isGroupOnly = !!els.descriptionDiv.has('.group_only').length;
+		this.isEntered = els.post.find('.giveaway__row-inner-wrap').hasClass('is-faded')
+		this.isContributorOnly = false;
+		this.isContributorGreen = false;		
+		this.isGroupOnly = false;
 		
 		
 		if(this.isContributorOnly) {
@@ -128,16 +107,15 @@ function Giveaway(obj) {
 
 		this.isEnterable = null; //TODO: can we enter this giveaway? (with and without fetched giveaway)
 		
-		var descriptionText = els.descriptionDiv.text().trim().split("\n")[0].trim();
-		this.isCommingSoon = (descriptionText.indexOf("begins") != -1);
-		this.isClosed = (descriptionText.indexOf('Awaiting') != -1) || (descriptionText.toLowerCase().indexOf('congratulations') != -1);
-		this.isOpen = (descriptionText.indexOf('Open for') != -1);
+		this.isCommingSoon = false;
+		this.isClosed = false;
+		this.isOpen = true;
 		
 		this.isCommentable = null; //TODO: dunno how
 		
-		this.titleText = els.titleDiv.text().trim();
+		this.titleText = els.post.find('.giveaway__heading').text().trim();
 		
-		var copiesMatch = this.titleText.toLowerCase().match(/\((.*)\s*copies\)/);
+		var copiesMatch = this.titleText.match(/\((.*)\s*copies\)/i);
 		var copiesNumber = "1";
 		if(copiesMatch) {
 			copiesNumber = copiesMatch[1].replace(/([^0-9*])/g, '');
@@ -147,23 +125,23 @@ function Giveaway(obj) {
 		this.points = parseInt(this.titleText.replace(/.*\(([0-9]*)P\).*/i, "$1"));
 		this.pirceUSD = null; //TODO: process after fetch !==========
 		
-		this.timeStartText = els.timeRemainingDiv.find('span strong').text().trim();
-		this.timeEndText = els.timeRemainingDiv.children('strong').text().trim()
+		this.timeStartText = els.post.find('div.giveaway__columns > div.giveaway__column--width-fill.text-right > span').text().trim();
+		this.timeEndText = els.post.find('div.giveaway__columns > div:nth-child(1) > span').text().trim();
 		
-		this.timeStart = this.stringToMs(this.timeStartText);
-		this.timeEnd = this.stringToMs(this.timeEndText);
+		this.timeStart = parseInt(els.post.find('div.giveaway__columns > div.giveaway__column--width-fill.text-right > span').attr('data-timestamp'));
+		this.timeEnd = parseInt(els.post.find('.giveaway__columns > div > span[data-timestamp]').attr('data-timestamp'));
 		
-		this.authorName = els.createdByAnchor.text().trim();
-		this.authorHref = els.createdByAnchor.attr('href');
+		this.authorName = els.post.find('.giveaway__username').text().trim();
+		this.authorHref = els.post.find('.giveaway__username').attr('href');
 		
-		var authorAvatarStyle = els.centerDiv.children('.avatar').attr('style');
-		this.isPinned = !authorAvatarStyle;
+		var authorAvatarStyle = els.post.find('a.global__image-outer-wrap.global__image-outer-wrap--avatar-small > div').attr('style');
+		this.isPinned = false;
 		this.authorAvatar = authorAvatarStyle ? authorAvatarStyle.replace(/.*url\(([^\)]*)\).*/, "$1") : "img/no-image.png";
 		
-		this.entries = parseInt(els.entriesDiv.children('span').first().text().trim().replace(/([^0-9]*)/g, '')) || 0;
-		this.comments = parseInt(els.entriesDiv.children('span').last().text().trim().replace(/([^0-9]*)/g, ''));
+		this.entries = parseInt(els.post.find('div.giveaway__links > a:nth-child(1) > span').text().trim().replace(/([^0-9]*)/g, '')) || 0;
+		this.comments = parseInt(els.post.find('div.giveaway__links > a:nth-child(2) > span').text().trim().replace(/([^0-9]*)/g, ''));
 		
-		this.appLogo = els.rightDiv.find('img').attr('data-src');
+		this.appLogo = els.post.find('a.global__image-outer-wrap.global__image-outer-wrap--game-medium > div').attr('style').replace(/.*url\(([^\)]*)\).*/, "$1")
 		if(this.appLogo.indexOf('://') == -1) {
 			this.appLogo = 'http://www.steamgifts.com'+this.appLogo;
 		}
@@ -206,37 +184,6 @@ function Giveaway(obj) {
 				return true;
 		};
 		return false;
-	};
-	
-	this.stringToMs = function(str) {
-		var str = str.toLowerCase();
-		var x = {  //Not great but I'm out of tea :(
-			second: 1000, 
-			minute: 60000, // 60 * 1000
-			hour: 3600000, // 60 * 60 * 1000
-			day: 86400000, // 24 * 60 * 60 * 1000
-			week: 604800000, // 7 * 24 * 60 * 60 * 1000
-			month: 2419200000 // 4 * 7 * 24 * 60 * 60 * 1000
-		};
-		
-		var res = NaN;
-		
-		var number = parseInt(str.replace(/([^0-9]*)/g, '').trim());
-		if(!number) return res;
-		
-		var text = str.replace(/([0-9]*)/g, '').trim();
-		
-		for(j in x) {
-			if(x.hasOwnProperty(j)) {
-				var val = x[j];
-				if(text.indexOf(j) !=-1) {
-					res = number * val;
-					break;
-				}
-			}
-		}
-		
-		return res ? res : number;
 	};
 	
 	this.toObject = function() {
