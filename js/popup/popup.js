@@ -37,7 +37,7 @@ var hashers = {
 	}
 };
 
-var hashFunction = hashers.hashSoonest;
+var hashFunction = hashers.hashWinChance;
 var ListMan = null,
 	port = chrome.extension.connect();
 
@@ -80,7 +80,15 @@ $(function(){
 		filterDoFilterButton = document.getElementById('filterDoFilter');
 	
 	//Initialize list manager (Animation, Sorting and all the crap)
-	ListMan = new ListManager(listEl, hashFunction, []);
+	ListMan = new ListManager(listEl, hashFunction, [], onEnterGiveaway);
+
+	function onEnterGiveaway(obj, event) {
+		showOverlay('Entering Giveaway....');
+		port.postMessage({
+			type: 'enterGiveaway',
+			uid: obj.uid
+		})
+	}
 
 	function showOverlay(innerHTML) {
 		if(overlayEl.classList.contains('hide')) {

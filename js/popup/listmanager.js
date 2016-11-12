@@ -1,4 +1,4 @@
-var ListManager = function(listEl, compareFn, gifts) {
+var ListManager = function(listEl, compareFn, gifts, onEnterGiveaway) {
 	var that = this;
 
 	var elMap = Object.create(null);
@@ -111,12 +111,12 @@ var ListManager = function(listEl, compareFn, gifts) {
 
 	gifts.forEach(function(gift){
 		sortedMap.put(gift.uid, gift);
-		elMap[gift.uid] = BoxTemplate.render(gift);
+		elMap[gift.uid] = BoxTemplate.render(gift, onEnterGiveaway);
 		that.append(elMap[gift.uid]);
 	});
 
 	sortedMap.onInsert = function(newObj){
-		var newEl = BoxTemplate.render(newObj.val);
+		var newEl = BoxTemplate.render(newObj.val, onEnterGiveaway);
 		that.insertAt(newObj.pos, newEl);
 	};
 

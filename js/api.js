@@ -29,6 +29,8 @@ function API() {
 	this.lastUpdate = null;
 	this.isAuthorized = false;
 	this.state = API.STATE_IDLE;
+
+	this.currentToken = null;
 	
 	this.xhr = new XMLHttpRequest();
 	
@@ -39,13 +41,14 @@ function API() {
 	this.init = function(){
 		
 	};
-	
+
 	this.parseUserInfo = function(html) {
 		
 		var safeHTML = this.replaceSrcs(html);
 		
-		var pointsEl = $('div#navigation ol li a:contains("Account")', safeHTML).last();
-		var profileEl = $('div#navigation ol li a[href^="/user/"]', safeHTML);
+		this.currentToken = $('input[name="xsrf_token"]', safeHTML).last().attr('value').trim();
+		var pointsEl = $('div.nav__right-container a > span.nav__points', safeHTML).last();
+		var profileEl = $('div.nav__right-container  a[href^="/user/"]', safeHTML);
 		
 		this.isAuthorized = pointsEl.length == 1;
 		
@@ -86,17 +89,25 @@ function API() {
 		//dont load sources when css traversing
 		return input.replace(/(src)="([^"]*)"/g, "data-src=\"$2\"");
 	};
+
+	this.enterGiveaway = function(uid, callback) {
+		var data = new FormData();
+		data.append('xsrf_token', this.currentToken)
+		data.append('do', 'entry_insert')
+		data.append('code', uid)
+		this._post('https://www.steamgifts.com/ajax.php', data, true, function(responseText, code, statusText){
+			callback(responseText, code, statusText)
+		})
+	}
 	
 	this.getGiveaways = function(status, page, callback){
-		this._get('http://www.steamgifts.com/'+status+'/page/'+page, function(html, code, text){
+		this._get('https://www.steamgifts.com/giveaways/search?page=' + encodeURIComponent(page), function(html, code, text){
 			var safeHTML = that.replaceSrcs(html);
 		
 			var arr = that.processGiveaways(safeHTML);
 			callback(arr, code, text);
 		});
 	};
-	
-
 	
 	this.getUserInfo = function(){
 		return {
@@ -122,18 +133,26 @@ function API() {
 			callback(that.xhr.responseText, that.xhr.status, that.xhr.statusText);
 		};
 	};
+
+	this._post = function(url, formData, urlEncoded, callback) {
+		var xhr = new XMLHttpRequest()
+		xhr.open("POST", url, true);
+		if(urlEncoded) {
+			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8')
+			xhr.send(urlencodeFormData(formData))
+		} else {
+			xhr.send(formData);
+		}
+		xhr.onreadystatechange = function() {
+			if (that.xhr.readyState != 4)  { return; }
+			callback(that.xhr.responseText, that.xhr.status, that.xhr.statusText);
+		};
+	};
 	
 	this.processGiveaways = function(html) {
 		var arr = [];
-		$('.post', html).each(function(idx, item){
-			if($(item).children('.left').length > 0) {
-				arr.push(that.processGiveaway(item.outerHTML));
-			} else {
-				$(item).children('div').each(function(idx, devPost) {
-					arr.push(that.processGiveaway(devPost.outerHTML));
-				})
-			}
-			//return false;
+		$('.giveaway__row-outer-wrap', html).each(function(idx, item){
+			arr.push(that.processGiveaway(item.outerHTML))
 		});
 		return arr;
 	};
@@ -145,3 +164,14 @@ function API() {
 	};
 
 }
+
+function urlencodeFormData(fd){
+	var s = '';
+	function encode(s){ return encodeURIComponent(s).replace(/%20/g,'+'); }
+	for(var pair of fd.entries()){
+		if(typeof pair[1]=='string'){
+			s += (s?'&':'') + encode(pair[0])+'='+encode(pair[1]);
+		}
+	}
+	return s;
+}	

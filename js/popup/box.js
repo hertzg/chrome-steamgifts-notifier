@@ -311,7 +311,7 @@ var BoxTemplate;
 			return infoDiv;
 		};
 	
-		this.render = function(obj){
+		this.render = function(obj, onEnterGiveaway, onCommentGiveaway, onCommentAndEnterGiveaway){
 		
 			var boxDiv = document.createElement('div');
 			boxDiv.classList.add('box');
@@ -366,6 +366,7 @@ var BoxTemplate;
 			commentAndEnterLink.title="Comment and Enter";
 			commentAndEnterLink.addEventListener('click', function(e){
 				console.log('comment and enter giveaway #'+obj.href, arguments);
+				onCommentAndEnterGiveaway && onCommentAndEnterGiveaway(obj, e)
 				e.stopPropagation();
 				return false;
 			});
@@ -379,6 +380,7 @@ var BoxTemplate;
 			enterLink.title="Enter";
 			enterLink.addEventListener('click', function(e){
 				console.log('enter giveaway #'+obj.href, arguments);
+				onEnterGiveaway && onEnterGiveaway(obj, e)
 				e.stopPropagation();
 				return false;
 			});
@@ -390,6 +392,7 @@ var BoxTemplate;
 			commentLink.title="Comment";
 			commentLink.addEventListener('click', function(e){
 				console.log('comment giveaway #'+obj.href, arguments);
+				onCommentGiveaway && onCommentGiveaway(obj, e)
 				e.stopPropagation();
 				return false;
 			});
