@@ -16,6 +16,7 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 ## Changelog
 
 ### v 1.2
+- Some hacking to make it work minimally
 - Moving from jQuery to native JS
 - Moved from $.get to  native XHR request (oh jQuery, appears that u suck too)
 - Temporal fix for images loading when initializing jquery object on html (seems so)
@@ -137,6 +138,7 @@ Simple as [click here to Install from Google Chrome Store (Free)](https://chrome
 ------
 
 ### v1.0.10
+- Fixed the Points overflow bug
 - remove zo's script
 
 ### v1.0.9
